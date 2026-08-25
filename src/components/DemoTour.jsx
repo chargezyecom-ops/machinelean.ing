@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 const steps = [
   { view: 'market', target: '#live-terminal', title: 'LIVE MARKETS', description: 'The main intelligence terminal showing real-time Pump.fun market data, liquidity rotation and narrative clustering.' },
-  { view: 'market', target: '.war-topbar', title: 'machinelearn.ing STATUS', description: 'The status bar shows the machinelearn.ing brand, live feed status, event channel health and current time.' },
+  { view: 'market', target: '.war-topbar', title: 'mlearn.ing STATUS', description: 'The status bar shows the mlearn.ing brand, live feed status, event channel health and current time.' },
   { view: 'market', target: '.launch-rail', title: 'PUMP.FUN LIVE', description: 'Real-time stream of new token creation events from the Pump.fun program on Solana.' },
   { view: 'market', target: '#signal-nexus', title: 'TRENCH SIGNAL RADAR', description: 'Interactive bubblemap showing token positions by narrative cluster. Hover for details, click to select.' },
   { view: 'market', target: '#token-watchlist', title: 'HOT MARKET WATCHLIST', description: 'The top tokens ranked by volume, hype score and trending position.' },
@@ -27,7 +27,7 @@ export default function DemoTour({ step: currentStep, onStep, onClose }) {
     <div className={`machine-tour ${visible ? 'is-visible' : ''}`} role="dialog" aria-label="Guided tour">
       <div className="machine-tour__card">
         <div className="machine-tour__head">
-          <span><i /> machinelearn.ing / GUIDED TOUR</span>
+          <span><i /> mlearn.ing / GUIDED TOUR</span>
           <span>STEP {currentStep + 1} / {steps.length}</span>
         </div>
         <div className="machine-tour__body">

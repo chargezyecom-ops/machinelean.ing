@@ -1826,3 +1826,37 @@ footer { padding: 70px 0 24px; background: #030504; }.footer-grid { display: gri
   border-color: #333;
   background: #0c1210;
 }
+
+/* Partner logos */
+.terminal-footer__partner-logo {
+  border-radius: 3px;
+  object-fit: contain;
+  opacity: 0.8;
+}
+.terminal-footer__partner-logo:hover {
+  opacity: 1;
+}
+
+/* BUY Button */
+.terminal-app__buy-btn {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #00f5d4;
+  color: #050706;
+  font: 700 9px/1 'JetBrains Mono Variable', monospace;
+  letter-spacing: 0.06em;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.terminal-app__buy-btn:hover {
+  background: #00ffdd;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 245, 212, 0.3);
+}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8787/api'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://steadfast-cat-production-cc3a.up.railway.app/api'
 
 export function useLiveMarket(intervalMs = 10000) {
   const [launches, setLaunches] = useState([])

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Activity, ArrowLeftRight, CircleDot, Database, PlayCircle } from 'lucide-react'
+import { Activity, Zap, Database, PlayCircle } from 'lucide-react'
 import MlEngineLogo from './components/MlEngineLogo.jsx'
 import WalletGate from './components/WalletGate.jsx'
 import LiveTerminal from './components/LiveTerminal.jsx'
@@ -14,14 +14,14 @@ function initialView() {
 export default function App() {
   const [view, setView] = useState(initialView)
   const [booting, setBooting] = useState(() => {
-    try { return window.sessionStorage.getItem('ml:machinelearn-learn-booted') !== '1' } catch { return true }
+    try { return window.sessionStorage.getItem('ml:mlearn-learn-booted') !== '1' } catch { return true }
   })
   const [tourOpen, setTourOpen] = useState(false)
   const [tourStep, setTourStep] = useState(0)
   const [logoPulse, setLogoPulse] = useState(false)
 
   useEffect(() => {
-    document.title = 'machinelearn.ing - Pump.fun Market Intelligence'
+    document.title = 'mlearn.ing - Pump.fun Market Intelligence'
     const syncHash = () => setView(initialView())
     window.addEventListener('hashchange', syncHash)
     return () => window.removeEventListener('hashchange', syncHash)
@@ -31,7 +31,7 @@ export default function App() {
     if (!booting) return undefined
     const timer = window.setTimeout(() => {
       setBooting(false)
-      try { window.sessionStorage.setItem('ml:machinelearn-learn-booted', '1') } catch { /* ignore */ }
+      try { window.sessionStorage.setItem('ml:mlearn-learn-booted', '1') } catch { /* ignore */ }
     }, 2600)
     return () => window.clearTimeout(timer)
   }, [booting])
@@ -76,7 +76,7 @@ export default function App() {
 
   const dismissBoot = () => {
     setBooting(false)
-    try { window.sessionStorage.setItem('ml:machinelearn-learn-booted', '1') } catch { /* ignore */ }
+    try { window.sessionStorage.setItem('ml:mlearn-learn-booted', '1') } catch { /* ignore */ }
   }
 
   const startTour = () => {
@@ -86,10 +86,10 @@ export default function App() {
   }
 
   return <div className="terminal-app">
-    {booting && <div className="machine-boot" role="status" aria-label="Initializing the machinelearn.ing interface">
+    {booting && <div className="machine-boot" role="status" aria-label="Initializing the mlearn.ing interface">
       <div className="machine-boot__reticle" aria-hidden="true"><i /><i /><i /><i /></div>
       <div className="machine-boot__core">
-        <span>machinelearn.ing / INTELLIGENCE TERMINAL / REV 1.0</span>
+        <span>mlearn.ing / INTELLIGENCE TERMINAL / REV 1.0</span>
         <strong>THE SYSTEM IS WATCHING.</strong>
         <div className="machine-boot__progress"><i /></div>
         <ul>
@@ -104,56 +104,23 @@ export default function App() {
     </div>}
     <a className="skip-link" href="#terminal-main">Skip to terminal</a>
     <header className="terminal-app__nav">
-      <a className="terminal-app__brand" href="/" aria-label="machinelearn.ing">
+      <a className="terminal-app__brand" href="/" aria-label="mlearn.ing">
         <MlEngineLogo pulse={logoPulse} size={27} />
-        <b>machinelearn.ing / INTELLIGENCE TERMINAL</b>
+        <b>mlearn.ing / INTELLIGENCE TERMINAL</b>
       </a>
       <nav aria-label="Terminal views">
         <button className={view === 'market' ? 'is-active' : ''} type="button" onClick={() => selectView('market')}><Activity size={13} />LIVE MARKETS</button>
         <button className={view === 'history' ? 'is-active' : ''} type="button" onClick={() => selectView('history')}><Database size={13} />SESSION MEMORY</button>
       </nav>
       <button className="machine-demo-trigger" type="button" onClick={startTour}><PlayCircle size={13} />GUIDED TOUR</button>
-      <div className="terminal-app__state">
-        <span><CircleDot size={11} />READ-ONLY MODE</span>
-        <span>PUMP.FUN / MAINNET</span>
-        <ArrowLeftRight size={12} />
-      </div>
+      <a href="https://pump.fun/coin/6cmLD5fnJwdbi77B4rTHWCxX91CJd8CYdNwJJsTypump" target="_blank" rel="noreferrer" className="terminal-app__buy-btn">
+        <Zap size={14} />BUY PUMP.FUN
+      </a>
     </header>
     <WalletGate requiredAccess="none"><main id="terminal-main">
       {view === 'history' ? <PumpHistoricalLab /> : <LiveTerminal />}
     </main></WalletGate>
-    <footer className="terminal-footer">
-      <div className="terminal-footer__inner">
-        <div className="terminal-footer__logos">
-          <div className="terminal-footer__logo-item">
-            <MlEngineLogo size={20} />
-            <span>machinelearn.ing</span>
-          </div>
-          <div className="terminal-footer__divider" />
-          <div className="terminal-footer__logo-item">
-            <svg viewBox="0 0 200 56" width="20" height="20" className="terminal-footer__ai16z-logo">
-              <rect width="200" height="56" rx="8" fill="none"/>
-              <text x="100" y="35" textAnchor="middle" fill="#00f5d4" fontSize="28" fontWeight="bold" fontFamily="'JetBrains Mono', monospace">ai16z</text>
-            </svg>
-            <span>BACKED BY ai16z</span>
-          </div>
-          <div className="terminal-footer__divider" />
-          <div className="terminal-footer__logo-item">
-            <svg viewBox="0 0 24 24" width="18" height="18" className="terminal-footer__pump-logo">
-              <circle cx="12" cy="12" r="11" fill="none" stroke="#c084fc" strokeWidth="1.5"/>
-              <text x="12" y="16" textAnchor="middle" fill="#c084fc" fontSize="10" fontWeight="bold" fontFamily="'JetBrains Mono', monospace">P</text>
-            </svg>
-            <span>POWERED BY PUMP.FUN</span>
-          </div>
-        </div>
-        <div className="terminal-footer__right">
-          <a href="https://x.com/maharshii" target="_blank" rel="noreferrer" className="terminal-footer__x" aria-label="Follow @maharshii on X">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            <span>@maharshii</span>
-          </a>
-        </div>
-      </div>
-    </footer>
+    
     {tourOpen && <DemoTour step={tourStep} onStep={setTourStep} onClose={() => setTourOpen(false)} />}
   </div>
 }

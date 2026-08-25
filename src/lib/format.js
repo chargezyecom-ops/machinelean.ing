@@ -1,5 +1,5 @@
 /**
- * Shared formatting utilities for machinelearn.ing
+ * Shared formatting utilities for mlearn.ing
  */
 const compactIntl = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 })
 const compactShort = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 })

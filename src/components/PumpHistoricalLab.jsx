@@ -3,7 +3,7 @@ import { Activity, ArrowUpRight, ArrowDownRight, Database, Flame, Gauge, Globe, 
 import { compact, usd, signed, tokenAge, shortAddress, formatPrice } from '../lib/format.js'
 import { generateMockUniverse, spawnNewToken } from '../lib/mockEngine.js'
 
-const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8787/api'
+const API = import.meta.env.VITE_API_BASE_URL || 'https://steadfast-cat-production-cc3a.up.railway.app/api'
 
 function HistoricalMetric({ icon: Icon, label, value, detail, tone = '', delay = 0 }) {
   const [visible, setVisible] = useState(false)
@@ -229,7 +229,7 @@ export default function PumpHistoricalLab() {
     <section className="history-lab" id="history-lab" aria-labelledby="history-lab-title">
       <div className="history-lab__head">
         <div>
-          <span><Database size={14} /> machinelearn.ing / SESSION MEMORY</span>
+          <span><Database size={14} /> mlearn.ing / SESSION MEMORY</span>
           <h2 id="history-lab-title">Everything the engine has <em>observed this session.</em></h2>
           <p>Live capture from Pump.fun creation events, market observations and on-chain activity.</p>
         </div>

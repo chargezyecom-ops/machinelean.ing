@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 const MAX_LAUNCHES = 200
 
@@ -13,7 +13,7 @@ export function usePumpLaunchStream() {
     if (import.meta.env.MODE === 'test') return undefined
     if (typeof WebSocket === 'undefined') { setStatus('unsupported'); return undefined }
 
-    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8787/api'
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://steadfast-cat-production-cc3a.up.railway.app/api'
     const wsUrl = apiBase.replace(/^http/, 'ws') + '/v1/stream'
 
     let socket

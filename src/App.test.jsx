@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App.jsx'
 
-describe('machinelearn.ing full-screen terminal', () => {
+describe('ML ENGINE full-screen terminal', () => {
   beforeEach(() => {
     window.history.replaceState({}, '', '/')
     window.sessionStorage.clear()
@@ -27,12 +27,10 @@ describe('machinelearn.ing full-screen terminal', () => {
     expect(screen.getByText('STEP 1 / 9')).toBeInTheDocument()
   }, 15000)
 
-  it('has a footer with social links', () => {
+  it('has a buy button in the header', () => {
     render(<App />)
-    const footer = document.querySelector('.terminal-footer')
-    expect(footer).toBeInTheDocument()
-    expect(footer.textContent).toContain('@maharshii')
-    expect(footer.textContent).toContain('ai16z')
-    expect(footer.textContent).toContain('PUMP.FUN')
+    const buyBtn = document.querySelector('.terminal-app__buy-btn')
+    expect(buyBtn).toBeInTheDocument()
+    expect(buyBtn.href).toContain('pump.fun')
   }, 15000)
 })

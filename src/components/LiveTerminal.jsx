@@ -87,7 +87,7 @@ export default function LiveTerminal() {
     <section className="war-room" id="live-terminal">
       <div className="shell war-frame">
         <div className="war-topbar">
-          <div className="war-brand"><MlEngineLogo pulse={logoPulse} size={25} /><span>machinelearn.ing / LIVE INTELLIGENCE</span></div>
+          <div className="war-brand"><MlEngineLogo pulse={logoPulse} size={25} /><span>mlearn.ing / LIVE INTELLIGENCE</span></div>
           <div className="war-status">
             <span className={pump.status === 'live' ? 'is-live' : 'is-degraded'}><i />{pump.status.toUpperCase()}</span>
             <span>{clock.toISOString().slice(11, 19)} UTC</span>

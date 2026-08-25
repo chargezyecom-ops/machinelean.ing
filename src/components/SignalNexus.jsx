@@ -372,7 +372,7 @@ export default function SignalNexus({ liveTokens = [], clusters = [], narrativeL
     <section className="signal-nexus" id="signal-nexus">
       <div className="signal-nexus__head">
         <div>
-          <span><ScanLine size={13} /> machinelearn.ing / NARRATIVE TOPOLOGY</span>
+          <span><ScanLine size={13} /> mlearn.ing / NARRATIVE TOPOLOGY</span>
           <h2 id="signal-nexus-title">Real-time pump.fun token clustering with ML predictions</h2>
         </div>
         <div className="signal-nexus__head-stats">

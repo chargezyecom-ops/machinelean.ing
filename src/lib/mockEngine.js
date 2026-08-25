@@ -1,5 +1,5 @@
 /**
- * Mock data engine for machinelearn.ing demo.
+ * Mock data engine for mlearn.ing demo.
  * Generates realistic pump.fun tokens, narratives, buy/sell signals,
  * and liquidity flows that update over time.
  */
