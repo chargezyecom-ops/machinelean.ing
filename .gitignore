@@ -8,6 +8,7 @@ coverage/
 .env.*
 !.env.example
 !.env.server.example
+!.env.production
 
 # Tooling and logs
 *.log
@@ -22,3 +23,4 @@ server/data/state.tmp.json
 .vscode/
 .DS_Store
 Thumbs.db
+
