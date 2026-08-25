@@ -18,22 +18,22 @@ describe('HypeGraph full-screen terminal', () => {
 
   it('exposes the Machine memory from the primary navigation', () => {
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: /MACHINE MEMORY/i }))
-    expect(screen.getByRole('heading', { name: /Comprendre ce qui arrive après chaque launch/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /HISTORICAL LAB/i }))
+    expect(screen.getByRole('heading', { name: /Understand what happens after every launch/i })).toBeInTheDocument()
   }, 15000)
 
   it('opens the guided four-minute presentation', () => {
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: /DÉMO GUIDÉE/i }))
-    expect(screen.getByRole('dialog', { name: /Les nouveaux tokens Pump.fun arrivent ici/i })).toBeInTheDocument()
-    expect(screen.getByText('COMMENT ÇA MARCHE')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /GUIDED TOUR/i }))
+    expect(screen.getByRole('dialog', { name: /Every Pump.fun creation event enters here/i })).toBeInTheDocument()
+    expect(screen.getByText('HOW IT WORKS')).toBeInTheDocument()
   }, 15000)
 
   it('keeps all twenty intelligence modules inside the terminal', () => {
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: /ANALYTIC FUNCTIONS/i }))
+    fireEvent.click(screen.getByRole('button', { name: /RESEARCH MODULES/i }))
     expect(screen.getByRole('heading', { name: /The complete intelligence.*control plane/i })).toBeInTheDocument()
-    expect(screen.getByText('OUTILS D’ANALYSE')).toBeInTheDocument()
-    expect(screen.getByText('20 FONCTIONS')).toBeInTheDocument()
+    expect(screen.getAllByText('RESEARCH MODULES').length).toBeGreaterThan(0)
+    expect(screen.getByText('20 SYSTEMS')).toBeInTheDocument()
   }, 15000)
 })

@@ -30,3 +30,7 @@ export function createCase(payload, signal) {
 export function fetchApiHealth(signal) {
   return request('/health', { signal })
 }
+
+export function fetchTokenSocials(mint, symbol, signal) {
+  return request(`/v1/tokens/${encodeURIComponent(mint)}/socials?symbol=${encodeURIComponent(symbol || '')}`, { signal })
+}

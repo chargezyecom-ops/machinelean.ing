@@ -1,9 +1,9 @@
 {
   "id": "/",
-  "name": "HypeGraph — Onchain Attention Intelligence",
+  "name": "HypeGraph — Pump.fun Market Intelligence",
   "short_name": "HypeGraph",
-  "description": "GPU-native research interface for Pump.fun narratives, wallets, KOLs and market microstructure.",
-  "lang": "fr",
+  "description": "Real-time research interface for trending Pump.fun markets, liquidity, transactions, narratives, creators and social signals.",
+  "lang": "en",
   "dir": "ltr",
   "start_url": "/",
   "scope": "/",

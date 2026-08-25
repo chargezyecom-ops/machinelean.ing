@@ -18,7 +18,7 @@ export default function App() {
   const [tourStep, setTourStep] = useState(0)
 
   useEffect(() => {
-    document.title = 'HypeGraph Machine — Pump.fun Observation System'
+    document.title = 'HypeGraph — Pump.fun Market Intelligence'
     const syncHash = () => setView(initialView())
     window.addEventListener('hashchange', syncHash)
     return () => window.removeEventListener('hashchange', syncHash)
@@ -75,7 +75,7 @@ export default function App() {
   }
 
   return <div className="terminal-app">
-    {booting && <div className="machine-boot" role="status" aria-label="Initialisation de l’interface HypeGraph">
+    {booting && <div className="machine-boot" role="status" aria-label="Initializing the HypeGraph interface">
       <div className="machine-boot__reticle" aria-hidden="true"><i /><i /><i /><i /></div>
       <div className="machine-boot__core">
         <span>HYPEGRAPH MACHINE INTERFACE / REV 0.4</span>
@@ -85,16 +85,16 @@ export default function App() {
         <button type="button" onClick={dismissBoot}>SKIP INITIALIZATION</button>
       </div>
     </div>}
-    <a className="skip-link" href="#terminal-main">Aller au terminal</a>
+    <a className="skip-link" href="#terminal-main">Skip to terminal</a>
     <header className="terminal-app__nav">
       <a className="terminal-app__brand" href="/" aria-label="HypeGraph Machine"><span>HG</span><b>HYPEGRAPH / MACHINE INTERFACE</b></a>
-      <nav aria-label="Vues du terminal">
-        <button className={view === 'market' ? 'is-active' : ''} type="button" onClick={() => selectView('market')}><Activity size={13} />LIVE OBSERVATION</button>
-        <button className={view === 'history' ? 'is-active' : ''} type="button" onClick={() => selectView('history')}><Database size={13} />MACHINE MEMORY</button>
-        <button className={view === 'modules' ? 'is-active' : ''} type="button" onClick={() => selectView('modules')}><BrainCircuit size={13} />ANALYTIC FUNCTIONS</button>
+      <nav aria-label="Terminal views">
+        <button className={view === 'market' ? 'is-active' : ''} type="button" onClick={() => selectView('market')}><Activity size={13} />LIVE MARKETS</button>
+        <button className={view === 'history' ? 'is-active' : ''} type="button" onClick={() => selectView('history')}><Database size={13} />HISTORICAL LAB</button>
+        <button className={view === 'modules' ? 'is-active' : ''} type="button" onClick={() => selectView('modules')}><BrainCircuit size={13} />RESEARCH MODULES</button>
       </nav>
-      <button className="machine-demo-trigger" type="button" onClick={startTour}><PlayCircle size={13} />DÉMO GUIDÉE</button>
-      <div className="terminal-app__state"><span><CircleDot size={11} />OBSERVER MODE</span><span>PUMP.FUN / MAINNET</span><ArrowLeftRight size={12} /></div>
+      <button className="machine-demo-trigger" type="button" onClick={startTour}><PlayCircle size={13} />GUIDED TOUR</button>
+      <div className="terminal-app__state"><span><CircleDot size={11} />READ-ONLY MODE</span><span>PUMP.FUN / MAINNET</span><ArrowLeftRight size={12} /></div>
     </header>
     <main id="terminal-main">
       {view === 'modules' ? <TerminalFeatureSuite /> : <LiveTerminal />}

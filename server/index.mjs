@@ -11,6 +11,7 @@ const host = process.env.HOST || '127.0.0.1'
 const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173').split(',').map((value) => value.trim())
 const state = await loadState()
 const streamClients = new Set()
+const socialCache = new Map()
 let pumpStatus = { state: process.env.SOLANA_WS_URL ? 'starting' : 'not_configured' }
 let persistTimer
 
@@ -52,6 +53,25 @@ app.get('/api/v1/tokens/:mint/lifecycle', async (request) => {
 app.get('/api/v1/graph/temporal', async () => abstain('entity-graph', 'Temporal graph database is not configured'))
 app.get('/api/v1/entities/:id/impact', async () => abstain('social-indexer', 'Timestamped social events are not configured'))
 app.get('/api/v1/tokens/:mint/integrity', async () => abstain('transaction-indexer', 'Counterparty-level swap data is not configured'))
+app.get('/api/v1/tokens/:mint/socials', async (request, reply) => {
+  if (!process.env.X_BEARER_TOKEN) return { data: null, configured: false, ...abstain('x-recent-search', 'Set X_BEARER_TOKEN to activate verified recent social mentions') }
+  const mint = String(request.params.mint || '')
+  if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(mint)) return reply.code(400).send({ error: 'invalid_mint' })
+  const symbol = String(request.query.symbol || '').replace(/[^a-zA-Z0-9_]/g, '').slice(0, 16)
+  const cacheKey = `${mint}:${symbol}`
+  const cached = socialCache.get(cacheKey)
+  if (cached && Date.now() - cached.at < 60_000) return cached.payload
+  const query = [`"${mint}"`, symbol ? `"$${symbol}"` : ''].filter(Boolean).join(' OR ')
+  const params = new URLSearchParams({ query: `(${query}) lang:en -is:retweet`, max_results: '25', 'tweet.fields': 'created_at,public_metrics,author_id', expansions: 'author_id', 'user.fields': 'username,name,verified,public_metrics' })
+  const response = await fetch(`https://api.x.com/2/tweets/search/recent?${params}`, { headers: { Authorization: `Bearer ${process.env.X_BEARER_TOKEN}`, Accept: 'application/json' } })
+  if (!response.ok) return reply.code(502).send({ error: 'social_source_failed', upstreamStatus: response.status })
+  const result = await response.json()
+  const authors = new Map((result.includes?.users || []).map((item) => [item.id, item]))
+  const posts = (result.data || []).map((post) => ({ id: post.id, createdAt: post.created_at, text: post.text, metrics: post.public_metrics || {}, author: authors.get(post.author_id) ? { username: authors.get(post.author_id).username, name: authors.get(post.author_id).name, verified: Boolean(authors.get(post.author_id).verified), followers: Number(authors.get(post.author_id).public_metrics?.followers_count) || 0 } : null }))
+  const payload = { data: { mentions: posts.length, engagement: posts.reduce((sum, post) => sum + Number(post.metrics.like_count || 0) + Number(post.metrics.retweet_count || 0) + Number(post.metrics.reply_count || 0) + Number(post.metrics.quote_count || 0), 0), verifiedAuthors: posts.filter((post) => post.author?.verified).length, posts }, configured: true, ...metadata('observed', ['x-recent-search']) }
+  socialCache.set(cacheKey, { at: Date.now(), payload })
+  return payload
+})
 
 app.get('/api/v1/alerts', async () => ({ data: state.alerts, ...metadata('observed', ['hypegraph-state']) }))
 app.post('/api/v1/alerts', async (request, reply) => { const body = request.body || {}; const item = { id: randomUUID(), createdAt: new Date().toISOString(), token: String(body.token || '').slice(0, 32), feature: String(body.feature || '').slice(0, 64), threshold: Math.max(0, Math.min(100, Number(body.threshold) || 0)) }; state.alerts.unshift(item); state.alerts = state.alerts.slice(0, 500); schedulePersist(); reply.code(201); return { data: item, ...metadata('observed', ['hypegraph-state']) } })

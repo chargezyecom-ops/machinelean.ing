@@ -35,7 +35,7 @@ function MarketNode({ node, selected, dimmed, horizonKey, onSelect }) {
     style={{ '--x': `${node.x}%`, '--y': `${node.y}%`, '--node-size': `${36 + score * .28}px`, '--delay': `${node.index * -.43}s` }}
     type="button"
     onClick={() => onSelect(node.token.address)}
-    aria-label={`Sélectionner ${node.token.symbol}, score ${score}, évolution ${signed(change)}`}
+    aria-label={`Select ${node.token.symbol}, score ${score}, change ${signed(change)}`}
   >
     <span className="nexus-node__orb"><i /><em>{score}</em></span>
     <strong>${node.token.symbol.slice(0, 8)}</strong>
@@ -49,7 +49,7 @@ function NarrativeNode({ node, active, dimmed, onSelect }) {
     style={{ '--x': `${node.x}%`, '--y': `${node.y}%`, '--node-size': `${58 + Math.min(34, node.item.tokens * 2)}px` }}
     type="button"
     onClick={() => onSelect(node.item.name)}
-    aria-label={`Filtrer le thème ${node.item.name}`}
+    aria-label={`Filter narrative ${node.item.name}`}
   >
     <span className="nexus-node__orb"><Network size={14} /></span>
     <strong>{node.item.name}</strong>
@@ -94,13 +94,13 @@ export default function SignalNexus({ tokens, narratives, launches, selectedAddr
         <span>{narrativeNodes.length} CLUSTERS</span>
         <span>{launchNodes.length} NEW MINTS</span>
       </div>
-      <div className="signal-nexus__horizons" aria-label="Horizon d’analyse">
+      <div className="signal-nexus__horizons" aria-label="Analysis horizon">
         {horizons.map((item) => <button className={horizon === item.id ? 'is-active' : ''} type="button" onClick={() => setHorizon(item.id)} key={item.id}>{item.id}</button>)}
       </div>
     </div>
 
     <div className="signal-nexus__body">
-      <div className="nexus-canvas" aria-label="Graphe interactif des relations entre tokens, thèmes et créateurs">
+      <div className="nexus-canvas" aria-label="Interactive relationship graph for tokens, narratives and creators">
         <div className="nexus-canvas__scan" aria-hidden="true" />
         <div className="nexus-canvas__reticle" aria-hidden="true"><Crosshair size={38} /></div>
         <svg className="nexus-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
@@ -119,14 +119,14 @@ export default function SignalNexus({ tokens, narratives, launches, selectedAddr
         {narrativeNodes.map((node) => <NarrativeNode node={node} active={narrativeFocus === node.item.name} dimmed={Boolean(narrativeFocus && narrativeFocus !== node.item.name)} onSelect={toggleNarrative} key={node.item.name} />)}
         {marketNodes.map((node) => <MarketNode node={node} selected={!inspectedLaunch && selected?.address === node.token.address} dimmed={Boolean(narrativeFocus && narrativeFocus !== node.token.narrative)} horizonKey={horizonKey} onSelect={selectMarketToken} key={node.token.address} />)}
         {launchNodes.map((node) => <div className="nexus-launch-pair" key={node.launch.id}>
-          <button className={`nexus-node nexus-node--launch ${inspectedLaunchId === node.launch.id ? 'is-selected' : ''}`} style={{ '--x': `${node.x}%`, '--y': `${node.y}%`, '--delay': `${node.index * -.5}s` }} type="button" onClick={() => setInspectedLaunchId(node.launch.id)} aria-label={`Inspecter le nouveau token ${node.launch.symbol}`}><span className="nexus-node__orb"><Radio size={11} /></span><strong>${node.launch.symbol.slice(0, 7)}</strong><small>NEW MINT</small></button>
-          <button className="nexus-node nexus-node--wallet" style={{ '--x': `${node.creatorX}%`, '--y': `${node.creatorY}%` }} type="button" onClick={() => setInspectedLaunchId(node.launch.id)} aria-label={`Inspecter le créateur ${shortAddress(node.launch.creator)}`}><span className="nexus-node__orb"><Wallet size={10} /></span><strong>{shortAddress(node.launch.creator)}</strong><small>CREATOR</small></button>
+          <button className={`nexus-node nexus-node--launch ${inspectedLaunchId === node.launch.id ? 'is-selected' : ''}`} style={{ '--x': `${node.x}%`, '--y': `${node.y}%`, '--delay': `${node.index * -.5}s` }} type="button" onClick={() => setInspectedLaunchId(node.launch.id)} aria-label={`Inspect new token ${node.launch.symbol}`}><span className="nexus-node__orb"><Radio size={11} /></span><strong>${node.launch.symbol.slice(0, 7)}</strong><small>NEW MINT</small></button>
+          <button className="nexus-node nexus-node--wallet" style={{ '--x': `${node.creatorX}%`, '--y': `${node.creatorY}%` }} type="button" onClick={() => setInspectedLaunchId(node.launch.id)} aria-label={`Inspect creator ${shortAddress(node.launch.creator)}`}><span className="nexus-node__orb"><Wallet size={10} /></span><strong>{shortAddress(node.launch.creator)}</strong><small>CREATOR</small></button>
         </div>)}
 
         <div className="nexus-canvas__legend">
           <span><i className="is-token" /> TOKEN</span><span><i className="is-narrative" /> NARRATIVE</span><span><i className="is-launch" /> NEW MINT</span><span><i className="is-wallet" /> CREATOR</span>
         </div>
-        <div className="nexus-canvas__hint"><Activity size={11} /> CLIQUEZ UN NŒUD POUR RECOMPOSER LE SIGNAL</div>
+        <div className="nexus-canvas__hint"><Activity size={11} /> SELECT A NODE TO RECOMPOSE THE SIGNAL</div>
       </div>
 
       <aside className="nexus-inspector" aria-live="polite">
@@ -139,22 +139,22 @@ export default function SignalNexus({ tokens, narratives, launches, selectedAddr
             <div><dt>SLOT</dt><dd>{compact.format(inspectedLaunch.slot || 0)}</dd></div>
             <div><dt>MODE</dt><dd>{inspectedLaunch.isMayhemMode ? 'MAYHEM' : inspectedLaunch.isCashbackEnabled ? 'CASHBACK' : 'STANDARD'}</dd></div>
           </dl>
-          <div className="nexus-inspector__callout"><Zap size={14} /><span><b>CRÉATION DÉTECTÉE</b>Le lien mint ↔ créateur vient directement des logs du programme Pump.fun. Prix, liquidité et score apparaîtront après indexation du marché.</span></div>
-          <a className="nexus-inspector__action" href={`https://solscan.io/token/${inspectedLaunch.mint}`} target="_blank" rel="noreferrer">OUVRIR SUR SOLSCAN <ExternalLink size={11} /></a>
+          <div className="nexus-inspector__callout"><Zap size={14} /><span><b>CREATION EVENT DETECTED</b>The mint ↔ creator edge comes directly from Pump.fun program logs. Price, liquidity and scoring appear after market indexing.</span></div>
+          <a className="nexus-inspector__action" href={`https://solscan.io/token/${inspectedLaunch.mint}`} target="_blank" rel="noreferrer">OPEN IN SOLSCAN <ExternalLink size={11} /></a>
         </> : <>
           <div className={`nexus-inspector__status ${selected?.ml.poison >= 60 ? 'is-risk' : 'is-hot'}`}><Flame size={12} /><span>{selected?.ml.poison >= 60 ? 'RISK ANOMALY' : 'PROPAGATION SIGNAL'}</span><b>{selected?.ml.confidence || 0}% CONF.</b></div>
-          <div className="nexus-inspector__identity"><span>{selected?.narrative || 'UNCLASSIFIED'} / {horizon}</span><h3>${selected?.symbol || '—'}</h3><p>{selected?.name || 'Signal non résolu'}</p></div>
-          <div className="nexus-inspector__score"><div style={{ '--score': `${selected?.ml.fomo || 0}%` }}><span>HYPE POTENTIAL</span><strong>{selected?.ml.fomo || 0}</strong><em>/100</em></div><p className={selectedChange >= 0 ? 'is-up' : 'is-down'}>{signed(selectedChange)}<span>sur {horizon}</span></p></div>
+          <div className="nexus-inspector__identity"><span>{selected?.narrative || 'UNCLASSIFIED'} / {horizon}</span><h3>${selected?.symbol || '—'}</h3><p>{selected?.name || 'Unresolved market signal'}</p></div>
+          <div className="nexus-inspector__score"><div style={{ '--score': `${selected?.ml.fomo || 0}%` }}><span>HYPE POTENTIAL</span><strong>{selected?.ml.fomo || 0}</strong><em>/100</em></div><p className={selectedChange >= 0 ? 'is-up' : 'is-down'}>{signed(selectedChange)}<span>over {horizon}</span></p></div>
           <dl className="nexus-inspector__facts">
             <div><dt>FLOW 1H</dt><dd>{usd(selected?.volume1h)}</dd></div>
             <div><dt>LIQUIDITY</dt><dd>{usd(selected?.liquidity)}</dd></div>
             <div><dt>PRESSURE</dt><dd>{pressure}/100</dd></div>
             <div><dt>RELATED</dt><dd>{relatedTokens} TOKENS</dd></div>
           </dl>
-          <div className={`nexus-inspector__callout ${selected?.ml.poison >= 60 ? 'is-risk' : ''}`}>{selected?.ml.poison >= 60 ? <ShieldAlert size={14} /> : <Network size={14} />}<span><b>{selected?.ml.poison >= 60 ? 'SIGNAL CONTAMINÉ' : 'NARRATIVE CONVERGENCE'}</b>{relatedTokens ? `${relatedTokens} autre${relatedTokens > 1 ? 's' : ''} token${relatedTokens > 1 ? 's' : ''} partage${relatedTokens > 1 ? 'nt' : ''} ce thème.` : 'Ce thème ne possède pas encore de pair comparable dans la fenêtre.'} Score heuristique, pas une prédiction.</span></div>
-          <a className="nexus-inspector__action" href={selected?.url} target="_blank" rel="noreferrer">OUVRIR LE MARCHÉ <ExternalLink size={11} /></a>
+          <div className={`nexus-inspector__callout ${selected?.ml.poison >= 60 ? 'is-risk' : ''}`}>{selected?.ml.poison >= 60 ? <ShieldAlert size={14} /> : <Network size={14} />}<span><b>{selected?.ml.poison >= 60 ? 'CONTAMINATED SIGNAL' : 'NARRATIVE CONVERGENCE'}</b>{relatedTokens ? `${relatedTokens} other token${relatedTokens > 1 ? 's' : ''} share this narrative.` : 'No comparable token currently shares this narrative in the active window.'} This is a research heuristic, not a forecast.</span></div>
+          <a className="nexus-inspector__action" href={selected?.url} target="_blank" rel="noreferrer">OPEN MARKET <ExternalLink size={11} /></a>
         </>}
-        <div className="nexus-inspector__evidence"><span><i /> RELATION THÈME = CLASSIFICATION LEXICALE</span><span><i /> MINT ↔ CREATOR = LOG ONCHAIN OBSERVÉ</span></div>
+        <div className="nexus-inspector__evidence"><span><i /> NARRATIVE EDGE = LEXICAL CLASSIFICATION</span><span><i /> MINT ↔ CREATOR = OBSERVED ONCHAIN LOG</span></div>
       </aside>
     </div>
   </section>

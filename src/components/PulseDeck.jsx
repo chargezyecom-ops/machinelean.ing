@@ -27,7 +27,7 @@ export default function PulseDeck({ tokens, launches, selectedAddress, onSelectT
   return <section className="pulse-deck" aria-labelledby="pulse-deck-title">
     <div className="pulse-deck__title">
       <div><Activity size={13} /><span>REAL-TIME TRIAGE</span><h2 id="pulse-deck-title">Three live pressure lanes</h2></div>
-      <p>Du mint brut au signal exploitable : la même fenêtre trie ce qui vient de naître, ce qui accélère et ce qui présente une anomalie.</p>
+      <p>One continuous workflow from raw mint to actionable research: new births, accelerating markets and structural anomalies.</p>
     </div>
     <div className="pulse-deck__lanes">
       <article className="pulse-lane pulse-lane--birth">

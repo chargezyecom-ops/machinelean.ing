@@ -39,7 +39,7 @@ export function usePumpLaunchStream() {
         })
         if (incoming.length) setLaunches((current) => [...incoming, ...current].slice(0, MAX_LAUNCHES))
       } catch (cause) {
-        if (!(cause instanceof Error && cause.name === 'AbortError')) setError('Impossible de précharger les launches récents')
+        if (!(cause instanceof Error && cause.name === 'AbortError')) setError('Unable to preload recent creation events')
       }
     }
 
