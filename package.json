@@ -21,8 +21,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "pump:backfill": "node scripts/backfill-pump-launches.mjs",
-    "pump:smoke": "node scripts/smoke-pump-stream.mjs",
+    "pump:backfill": "node --env-file-if-exists=.env.server scripts/backfill-pump-launches.mjs",
+    "pump:smoke": "node --env-file-if-exists=.env.server scripts/smoke-pump-stream.mjs",
     "check": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {

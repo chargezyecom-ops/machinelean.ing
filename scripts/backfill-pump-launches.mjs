@@ -4,6 +4,7 @@ const rpcUrl = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.co
 const maxPages = Math.max(0, Number(process.env.PUMP_BACKFILL_MAX_PAGES || 1))
 const pageSize = Math.min(1000, Math.max(1, Number(process.env.PUMP_BACKFILL_PAGE_SIZE || 100)))
 const transactionBatchSize = Math.min(50, Math.max(1, Number(process.env.PUMP_BACKFILL_BATCH_SIZE || 5)))
+const requestDelayMs = Math.max(0, Number(process.env.PUMP_BACKFILL_REQUEST_DELAY_MS || 0))
 let before = process.env.PUMP_BACKFILL_BEFORE || undefined
 let page = 0
 let launches = 0
@@ -60,6 +61,7 @@ while (!maxPages || page < maxPages) {
         })}\n`)
       })
     })
+    if (requestDelayMs) await wait(requestDelayMs)
   }
 
   page += 1
