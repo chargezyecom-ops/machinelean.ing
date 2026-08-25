@@ -12,6 +12,7 @@ describe('HypeGraph full-screen terminal', () => {
     render(<App />)
     expect(screen.getByRole('main')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /The memetic observation grid/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Live memetic topology/i })).toBeInTheDocument()
     expect(screen.queryByText(/The neural map of onchain attention/i)).not.toBeInTheDocument()
   }, 15000)
 

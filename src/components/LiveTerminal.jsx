@@ -5,6 +5,8 @@ import { useLiveMarket } from '../hooks/useLiveMarket.js'
 import { usePumpLaunchStream } from '../hooks/usePumpLaunchStream.js'
 import { PUMP_IDL_URL, PUMP_PROGRAM_ID } from '../services/pumpEventDecoder.js'
 import PumpHistoricalLab from './PumpHistoricalLab.jsx'
+import PulseDeck from './PulseDeck.jsx'
+import SignalNexus from './SignalNexus.jsx'
 
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 })
 const signed = (value) => `${value >= 0 ? '+' : ''}${Number(value || 0).toFixed(Math.abs(value) >= 100 ? 0 : 2)}%`
@@ -58,6 +60,25 @@ function LinePlot({ values, positive }) {
 
 function Metric({ label, value, delta, tone = '' }) {
   return <div className={`war-metric ${tone}`}><span>{label}</span><strong>{value}</strong><small>{delta}</small></div>
+}
+
+function LiveLaunchRail({ pump }) {
+  const launches = pump.launches.slice(0, 10)
+  return <div className="launch-rail" aria-label="Derniers lancements Pump.fun">
+    <div className="launch-rail__label"><span><Radio size={12} /> PUMP LIVE</span><strong>{pump.stats.perMinute}/MIN</strong></div>
+    <div className="launch-rail__viewport">
+      {launches.length ? <div className={`launch-rail__track ${launches.length > 4 ? 'is-moving' : ''}`}>
+        {[...launches, ...(launches.length > 4 ? launches : [])].map((launch, index) => <a href={`https://solscan.io/token/${launch.mint}`} target="_blank" rel="noreferrer" key={`${launch.id}-${index}`}>
+          <i />
+          <time>{new Date(launch.timestamp * 1000).toISOString().slice(11, 19)}</time>
+          <b>${launch.symbol.slice(0, 10)}</b>
+          <span>{launch.name.slice(0, 24)}</span>
+          {launch.isMayhemMode && <em>MAYHEM</em>}
+        </a>)}
+      </div> : <div className="launch-rail__waiting"><i /> Listening for the next Pump.fun create event…</div>}
+    </div>
+    <div className="launch-rail__counter"><b>{pump.stats.session}</b><span>CAPTURED</span></div>
+  </div>
 }
 
 function buildFallbackNarratives(rows) {
@@ -124,6 +145,8 @@ export default function LiveTerminal() {
 
         {live.error && <div className="war-alert"><ShieldAlert size={12} /> Live API unavailable: {live.error}. Frozen research data remains visible.</div>}
 
+        <LiveLaunchRail pump={pump} />
+
         <div className="war-signal-banner" aria-label="Synthèse instantanée du marché">
           <div className="war-signal-banner__pulse"><Flame size={19} /><span>TOKEN À SURVEILLER</span><strong>${topSignal?.symbol || '—'}</strong><em>POTENTIEL {topSignal?.ml.fomo || 0}%</em></div>
           <div><TrendingUp size={16} /><span>TENDANCE GÉNÉRALE</span><strong>{marketBias}</strong><small>{expanding}/{rows.length} tokens progressent sur 5 min</small></div>
@@ -138,6 +161,10 @@ export default function LiveTerminal() {
           <Metric label="VISIBILITÉ PAYÉE" value={compact.format(stats.boosts)} delta="indicateur séparé du volume naturel" tone="orange" />
           <Metric label="TOKENS PUMP.FUN" value={`${stats.pumps}/${rows.length}`} delta="du lancement à la migration" tone="violet" />
         </div>
+
+        <SignalNexus tokens={rows} narratives={narratives} launches={pump.launches} selectedAddress={selected?.address || ''} onSelectToken={setSelectedAddress} />
+
+        <PulseDeck tokens={rows} launches={pump.launches} selectedAddress={selected?.address || ''} onSelectToken={setSelectedAddress} />
 
         <div className="war-panel war-launches" id="launch-feed">
           <div className="war-panel__head"><span>P0 / NOUVEAUX TOKENS PUMP.FUN EN DIRECT</span><b>{pump.status === 'live' ? 'SOLANA / CONFIRMÉ' : pump.status.toUpperCase()}</b></div>
