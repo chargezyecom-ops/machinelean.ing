@@ -1,0 +1,26 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.api
+    env_file: .env.server
+    ports:
+      - "8787:8787"
+    volumes:
+      - hypegraph_state:/app/server/data
+    restart: unless-stopped
+  web:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.web
+      args:
+        VITE_TERMINAL_URL: /app
+        VITE_API_BASE_URL: http://localhost:8787/api
+        VITE_RESEARCH_API_ENABLED: "true"
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+volumes:
+  hypegraph_state:

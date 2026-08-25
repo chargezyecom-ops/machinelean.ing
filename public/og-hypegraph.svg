@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs><radialGradient id="g"><stop stop-color="#b7ff3c" stop-opacity=".28"/><stop offset="1" stop-color="#050706" stop-opacity="0"/></radialGradient><pattern id="p" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#b9d7c8" stroke-opacity=".07"/></pattern></defs>
+  <rect width="1200" height="630" fill="#050706"/><rect width="1200" height="630" fill="url(#p)"/><circle cx="930" cy="300" r="310" fill="url(#g)"/>
+  <g stroke="#63ead0" stroke-opacity=".35"><path d="M720 170L930 300l150-110M930 300l90 190M930 300L760 460"/><circle cx="930" cy="300" r="94" fill="none"/><circle cx="930" cy="300" r="150" fill="none" stroke-dasharray="4 10"/></g>
+  <g fill="#b7ff3c"><circle cx="930" cy="300" r="13"/><circle cx="720" cy="170" r="6"/><circle cx="1080" cy="190" r="5"/></g><circle cx="1020" cy="490" r="6" fill="#c981ff"/>
+  <text x="74" y="93" fill="#b7ff3c" font-family="monospace" font-size="18" letter-spacing="3">HYPEGRAPH / SOLANA</text>
+  <text x="70" y="255" fill="#f0f5f2" font-family="Arial,sans-serif" font-size="72" font-weight="600" letter-spacing="-4">The neural map of</text><text x="70" y="335" fill="#b7ff3c" font-family="Georgia,serif" font-size="76" font-style="italic">onchain attention.</text>
+  <text x="74" y="433" fill="#8d9a94" font-family="monospace" font-size="16">NARRATIVES · WALLETS · KOLs · MARKET MICROSTRUCTURE</text>
+  <text x="74" y="550" fill="#5f6b65" font-family="monospace" font-size="13">TEMPORAL INTELLIGENCE FOR THE MEMETIC ECONOMY</text>
+</svg>

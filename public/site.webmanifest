@@ -1,0 +1,15 @@
+{
+  "id": "/",
+  "name": "HypeGraph — Onchain Attention Intelligence",
+  "short_name": "HypeGraph",
+  "description": "GPU-native research interface for Pump.fun narratives, wallets, KOLs and market microstructure.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050706",
+  "theme_color": "#050706",
+  "categories": ["finance", "business", "productivity"],
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
