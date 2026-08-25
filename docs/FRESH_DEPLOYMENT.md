@@ -34,8 +34,8 @@ npm install
 npm run dev:full
 ```
 
-- Landing: `http://localhost:5175/` when 5173 and 5174 are already occupied; otherwise Vite prints the selected port.
-- Terminal: `/app` on the same origin.
+- Terminal: `/` on the port printed by Vite (`http://localhost:5175/` in the current isolated session).
+- Intelligence modules: `/#modules`.
 - API: `http://localhost:8787/api/health`.
 
 Copy `.env.server.example` to `.env.server` and add the dedicated HypeGraph Solana URLs:
@@ -64,8 +64,8 @@ Set API secrets only in the API service secret store. Configure `CORS_ORIGINS` w
 ## DNS target layout
 
 ```text
-<domain>          web container
-app.<domain>      web container
+<domain>          full-screen terminal web container
+app.<domain>      optional alias to the same terminal
 api.<domain>      API container
 stream.<domain>   API WebSocket/reverse proxy
 ```

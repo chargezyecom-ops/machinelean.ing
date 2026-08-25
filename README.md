@@ -23,7 +23,7 @@ Run the isolated frontend and local API together:
 npm run dev:full
 ```
 
-The local landing page is available at `/`; the research workspace is available at `/app`. In production, set `VITE_TERMINAL_URL=https://app.your-domain.tld` and route that hostname to the same frontend bundle. The application automatically renders the terminal on any hostname beginning with `app.`.
+The full-screen market terminal opens directly at `/` (and remains compatible with `/app`). The twenty intelligence modules are available from the `ML MODULES` switch or `#modules`.
 
 Production validation:
 
@@ -35,8 +35,8 @@ This runs linting, type checks, the test suite and a production build.
 
 ## Product surfaces
 
-- Institutional landing page and GPU-native visual system
-- Dedicated `/app` workspace with automatic `app.*` subdomain routing
+- Full-screen terminal as the only product surface
+- Direct market/module switching without a marketing landing page
 - Six-layer ML model stack covering multimodal encoding, temporal graphs, regime detection and OOD abstention
 - Twenty-module operational workbench with local persistence and production adapter states
 - Near-live Solana war room inspired by dense institutional market terminals
