@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App.jsx'
 
-describe('HypeGraph full-screen terminal', () => {
+describe('machinelearn.ing full-screen terminal', () => {
   beforeEach(() => {
     window.history.replaceState({}, '', '/')
     window.sessionStorage.clear()
@@ -11,29 +11,28 @@ describe('HypeGraph full-screen terminal', () => {
   it('opens the market cockpit directly without a landing page', () => {
     render(<App />)
     expect(screen.getByRole('main')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /The memetic observation grid/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /Live memetic topology/i })).toBeInTheDocument()
-    expect(screen.queryByText(/The neural map of onchain attention/i)).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Three live pressure lanes/i })).toBeInTheDocument()
   }, 15000)
 
-  it('exposes the Machine memory from the primary navigation', () => {
+  it('exposes the Session Memory from the primary navigation', () => {
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: /HISTORICAL LAB/i }))
-    expect(screen.getByRole('heading', { name: /Understand what happens after every launch/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /SESSION MEMORY/i }))
+    expect(screen.getByRole('heading', { name: /Everything the engine has/i })).toBeInTheDocument()
   }, 15000)
 
-  it('opens the guided four-minute presentation', () => {
+  it('opens the guided tour', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /GUIDED TOUR/i }))
-    expect(screen.getByRole('dialog', { name: /Every Pump.fun creation event enters here/i })).toBeInTheDocument()
-    expect(screen.getByText('HOW IT WORKS')).toBeInTheDocument()
+    expect(screen.getByRole('dialog', { name: /Guided tour/i })).toBeInTheDocument()
+    expect(screen.getByText('STEP 1 / 9')).toBeInTheDocument()
   }, 15000)
 
-  it('keeps all twenty intelligence modules inside the terminal', () => {
+  it('has a footer with social links', () => {
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: /RESEARCH MODULES/i }))
-    expect(screen.getByRole('heading', { name: /The complete intelligence.*control plane/i })).toBeInTheDocument()
-    expect(screen.getAllByText('RESEARCH MODULES').length).toBeGreaterThan(0)
-    expect(screen.getByText('20 SYSTEMS')).toBeInTheDocument()
+    const footer = document.querySelector('.terminal-footer')
+    expect(footer).toBeInTheDocument()
+    expect(footer.textContent).toContain('@maharshii')
+    expect(footer.textContent).toContain('ai16z')
+    expect(footer.textContent).toContain('PUMP.FUN')
   }, 15000)
 })

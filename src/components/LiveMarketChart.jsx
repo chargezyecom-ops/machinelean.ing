@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { CandlestickSeries, ColorType, CrosshairMode, createChart, HistogramSeries } from 'lightweight-charts'
 import { Activity, ExternalLink, Radio } from 'lucide-react'
 import { fetchPoolOhlcv } from '../services/marketHistoryService.js'
 
 const horizons = ['1H', '6H', '24H']
-const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 })
-const signed = (value) => `${Number(value || 0) >= 0 ? '+' : ''}${Number(value || 0).toFixed(Math.abs(Number(value || 0)) >= 100 ? 0 : 2)}%`
+import { compact, signed } from '../lib/format.js'
 
 function formatPrice(value) {
   const price = Number(value || 0)
@@ -95,17 +94,18 @@ export default function LiveMarketChart({ token }) {
 
   return <section className="live-market-chart" aria-labelledby="live-market-chart-title">
     <header className="live-market-chart__head">
-      <div className="live-market-chart__identity"><span><Activity size={13} /> LIVE MARKET / #{token?.trendRank || '—'}</span><h2 id="live-market-chart-title">{token?.name || 'Unresolved market'} <em>${token?.symbol || '—'}</em></h2></div>
+      <div className="live-market-chart__identity"><span><Activity size={13} /> LIVE MARKET / #{token?.trendRank || 'â€”'}</span><h2 id="live-market-chart-title">{token?.name || 'Unresolved market'} <em>${token?.symbol || 'â€”'}</em></h2></div>
       <div className="live-market-chart__quote"><strong>{formatPrice(token?.price)}</strong><span className={token?.change24h >= 0 ? 'is-up' : 'is-down'}>{signed(token?.change24h)} / 24H</span></div>
       <div className="live-market-chart__ohlc"><span>O <b>{formatPrice(display?.open)}</b></span><span>H <b>{formatPrice(display?.high)}</b></span><span>L <b>{formatPrice(display?.low)}</b></span><span>C <b>{formatPrice(display?.close)}</b></span></div>
       <div className="live-market-chart__controls">{horizons.map((item) => <button className={horizon === item ? 'is-active' : ''} type="button" onClick={() => setHorizon(item)} key={item}>{item}</button>)}</div>
     </header>
     <div className="live-market-chart__stage">
       <div ref={containerRef} className="live-market-chart__canvas" />
-      {status === 'loading' && <div className="live-market-chart__state"><Radio size={14} /> LOADING VERIFIED OHLCV…</div>}
+      {status === 'loading' && <div className="live-market-chart__state"><Radio size={14} /> LOADING VERIFIED OHLCVâ€¦</div>}
       {status === 'error' && <div className="live-market-chart__state is-error">{error}</div>}
       {import.meta.env.MODE === 'test' && <div className="live-market-chart__state">VERIFIED OHLCV CHART</div>}
     </div>
-    <footer><span><i className={status === 'live' ? 'is-live' : ''} /> {status === 'live' ? 'REAL-TIME UPDATES ACTIVE' : status.toUpperCase()}</span><span>24H VOLUME <b>${compact.format(token?.volume24 || 0)}</b></span><span>POOL <b>{token?.pairAddress ? `${token.pairAddress.slice(0, 5)}…${token.pairAddress.slice(-5)}` : '—'}</b></span><a href="https://www.tradingview.com/" target="_blank" rel="noreferrer">CHARTS BY TRADINGVIEW <ExternalLink size={9} /></a></footer>
+    <footer><span><i className={status === 'live' ? 'is-live' : ''} /> {status === 'live' ? 'REAL-TIME UPDATES ACTIVE' : status.toUpperCase()}</span><span>24H VOLUME <b>${compact.format(token?.volume24 || 0)}</b></span><span>POOL <b>{token?.pairAddress ? `${token.pairAddress.slice(0, 5)}â€¦${token.pairAddress.slice(-5)}` : 'â€”'}</b></span><a href="https://www.tradingview.com/" target="_blank" rel="noreferrer">CHARTS BY TRADINGVIEW <ExternalLink size={9} /></a></footer>
   </section>
 }
+

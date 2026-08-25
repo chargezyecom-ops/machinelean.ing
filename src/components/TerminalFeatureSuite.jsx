@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+﻿import { useMemo, useState } from 'react'
 import {
   Activity, BellRing, Bot, BrainCircuit, BriefcaseBusiness, Braces, ChevronRight,
   CircleDot, Clock3, Code2, Cpu, Database, FlaskConical, GitBranch, Network,
@@ -60,9 +60,9 @@ export default function TerminalFeatureSuite() {
   const [copilotBusy, setCopilotBusy] = useState(false)
   const [webhookStatus, setWebhookStatus] = useState('')
   const [caseNote, setCaseNote] = useState('')
-  const [watchlist, setWatchlist] = useStoredState('hg:watchlist', [])
-  const [alerts, setAlerts] = useStoredState('hg:alerts', [])
-  const [cases, setCases] = useStoredState('hg:cases', [])
+  const [watchlist, setWatchlist] = useStoredState('ml:watchlist', [])
+  const [alerts, setAlerts] = useStoredState('ml:alerts', [])
+  const [cases, setCases] = useStoredState('ml:cases', [])
   const active = terminalFeatures.find((feature) => feature.id === activeId) || terminalFeatures[0]
   const token = tokens.find((item) => item.id === tokenId) || tokens[0]
   const output = useMemo(() => evaluateTerminalFeature(active.id, token, scenario, replayIndex), [active.id, replayIndex, scenario, token])
@@ -90,12 +90,12 @@ export default function TerminalFeatureSuite() {
         const response = await queryCopilot({ question: copilotQuery, mint: token.pool, context: output })
         setCopilotAnswer(response.answer || 'The API returned no answer.')
       } else {
-        setCopilotAnswer(`${token.symbol} is currently classified as “${output.verdict}”. The local evidence shows hype ${output.inference.hype}/100, persistence ${output.inference.persistence}/100 and contamination ${output.inference.contamination}/100. Wallet and social assertions are withheld until their adapters are connected.`)
+        setCopilotAnswer(`${token.symbol} is currently classified as â€œ${output.verdict}â€. The local evidence shows hype ${output.inference.hype}/100, persistence ${output.inference.persistence}/100 and contamination ${output.inference.contamination}/100. Wallet and social assertions are withheld until their adapters are connected.`)
       }
     } catch (error) { setCopilotAnswer(`Copilot unavailable: ${error.message}`) } finally { setCopilotBusy(false) }
   }
   const sendTestWebhook = async () => {
-    setWebhookStatus('SENDING…')
+    setWebhookStatus('SENDINGâ€¦')
     try {
       const response = await testWebhook({ event: 'demo.signal', token: token.symbol })
       setWebhookStatus(response.delivered ? 'DELIVERED' : 'DELIVERY DISABLED')
@@ -122,14 +122,15 @@ export default function TerminalFeatureSuite() {
         <div className="feature-special">
           {active.id === 'replay' && <div className="feature-replay"><div className="feature-replay__observations">{token.series24.slice(0, replayIndex + 1).slice(-6).map((value, index) => <span key={`${replayIndex}-${index}`}><small>T-{5 - index}</small><b>{value}</b></span>)}</div><label><span>POINT-IN-TIME / {replayIndex + 1}:00</span><input type="range" min="1" max="23" value={replayIndex} onChange={(event) => setReplayIndex(Number(event.target.value))} /></label></div>}
           {active.id === 'lifecycle' && <div className="feature-lifecycle">{['CREATE', 'BONDING', 'GRADUATE', 'PUMPSWAP', 'PERSIST'].map((stage, index) => <div className={index <= Math.round(output.score / 25) ? 'is-complete' : ''} key={stage}><i>{index + 1}</i><span>{stage}</span></div>)}</div>}
-          {active.id === 'alerts' && <div className="feature-records"><span>ACTIVE LOCAL RULES / {alerts.length}</span>{alerts.slice(0, 4).map((alert) => <b key={alert.id}>${alert.token} · {alert.feature} ≥ {alert.threshold}</b>)}</div>}
+          {active.id === 'alerts' && <div className="feature-records"><span>ACTIVE LOCAL RULES / {alerts.length}</span>{alerts.slice(0, 4).map((alert) => <b key={alert.id}>${alert.token} Â· {alert.feature} â‰¥ {alert.threshold}</b>)}</div>}
           {active.id === 'watchlists' && <div className="feature-records"><span>WATCHED ENTITIES / {watchlist.length}</span>{watchlist.map((id) => <b key={id}>${tokens.find((item) => item.id === id)?.symbol || id}</b>)}</div>}
-          {active.id === 'copilot' && <form className="feature-copilot" onSubmit={askCopilot}><label><Search size={14} /><input value={copilotQuery} onChange={(event) => setCopilotQuery(event.target.value)} placeholder="Ask about this entity, regime or evidence…" /></label><button type="submit" disabled={copilotBusy}><Send size={13} />{copilotBusy ? 'ANALYZING' : 'QUERY GRAPH'}</button>{copilotAnswer && <p><Bot size={15} />{copilotAnswer}</p>}</form>}
-          {active.id === 'webhooks' && <div className="feature-webhook"><Code2 size={18} /><div><b>POST /v1/webhooks</b><span>Events: launch.created · regime.changed · cohort.converged · risk.quarantined</span></div><button type="button" onClick={sendTestWebhook} disabled={!researchApiEnabled}>{webhookStatus || 'TEST CONNECTION'}</button></div>}
-          {active.id === 'cases' && <div className="feature-cases"><label><input value={caseNote} onChange={(event) => setCaseNote(event.target.value)} placeholder="Add an evidence-backed investigation note…" /><button type="button" onClick={addCase}><Save size={13} />SAVE CASE</button></label><div>{cases.slice(0, 3).map((item) => <p key={item.id}><span>${item.token} / {item.feature}</span><b>{item.note}</b></p>)}</div></div>}
+          {active.id === 'copilot' && <form className="feature-copilot" onSubmit={askCopilot}><label><Search size={14} /><input value={copilotQuery} onChange={(event) => setCopilotQuery(event.target.value)} placeholder="Ask about this entity, regime or evidenceâ€¦" /></label><button type="submit" disabled={copilotBusy}><Send size={13} />{copilotBusy ? 'ANALYZING' : 'QUERY GRAPH'}</button>{copilotAnswer && <p><Bot size={15} />{copilotAnswer}</p>}</form>}
+          {active.id === 'webhooks' && <div className="feature-webhook"><Code2 size={18} /><div><b>POST /v1/webhooks</b><span>Events: launch.created Â· regime.changed Â· cohort.converged Â· risk.quarantined</span></div><button type="button" onClick={sendTestWebhook} disabled={!researchApiEnabled}>{webhookStatus || 'TEST CONNECTION'}</button></div>}
+          {active.id === 'cases' && <div className="feature-cases"><label><input value={caseNote} onChange={(event) => setCaseNote(event.target.value)} placeholder="Add an evidence-backed investigation noteâ€¦" /><button type="button" onClick={addCase}><Save size={13} />SAVE CASE</button></label><div>{cases.slice(0, 3).map((item) => <p key={item.id}><span>${item.token} / {item.feature}</span><b>{item.note}</b></p>)}</div></div>}
         </div>
       </div>
     </div>
-    <div className="feature-disclaimer"><Cpu size={13} /><span>LOCAL MODULES RUN IN-BROWSER · ADAPTER MODULES REQUIRE THE PRODUCTION DATA PLANE · EXECUTION REMAINS DISABLED</span><b>{watchlist.length} WATCHED / {alerts.length} ALERTS / {cases.length} CASES</b></div>
+    <div className="feature-disclaimer"><Cpu size={13} /><span>LOCAL MODULES RUN IN-BROWSER Â· ADAPTER MODULES REQUIRE THE PRODUCTION DATA PLANE Â· EXECUTION REMAINS DISABLED</span><b>{watchlist.length} WATCHED / {alerts.length} ALERTS / {cases.length} CASES</b></div>
   </div></section>
 }
+

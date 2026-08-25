@@ -1,11 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { AreaSeries, ColorType, createChart } from 'lightweight-charts'
 import { Activity, ArrowDownRight, ArrowUpRight, ExternalLink, Link2, MessageCircle, Network, Radio, ShieldAlert, Waves } from 'lucide-react'
 import { fetchTokenSocials, researchApiEnabled } from '../services/researchApi.js'
 
-const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 })
-const usd = (value) => `$${compact.format(Number(value) || 0)}`
-const signed = (value) => `${Number(value || 0) >= 0 ? '+' : ''}${Number(value || 0).toFixed(2)}%`
+import { compact, usd, signed } from '../lib/format.js'
 
 function LiquidityChart({ points }) {
   const containerRef = useRef(null)
@@ -71,7 +69,7 @@ export default function MarketTelemetry({ token, narratives, telemetry, liquidit
   return <section className="market-telemetry" aria-labelledby="market-telemetry-title">
     <header className="market-telemetry__head">
       <div><span><Waves size={13} /> VERIFIED MARKET TELEMETRY</span><h2 id="market-telemetry-title">Capital, transactions, narrative and social</h2></div>
-      <div><span className={isLive ? 'is-live' : ''}><i /> {isLive ? 'MARKET FEED LIVE' : 'FALLBACK MODE'}</span><span>SESSION SAMPLES <b>{points.length}</b></span><span>24H RANK <b>#{token?.trendRank || '—'}</b></span></div>
+      <div><span className={isLive ? 'is-live' : ''}><i /> {isLive ? 'MARKET FEED LIVE' : 'FALLBACK MODE'}</span><span>SESSION SAMPLES <b>{points.length}</b></span><span>24H RANK <b>#{token?.trendRank || 'â€”'}</b></span></div>
     </header>
     <div className="market-telemetry__grid">
       <article className="telemetry-panel telemetry-panel--liquidity">
@@ -89,13 +87,13 @@ export default function MarketTelemetry({ token, narratives, telemetry, liquidit
 
       <article className="telemetry-panel telemetry-panel--narrative">
         <header><span><Network size={12} /> NARRATIVE ROTATION</span><b>REAL MARKET AGGREGATE</b></header>
-        <div className="telemetry-narratives">{narratives.slice(0, 5).map((item, index) => <div className={item.name === token?.narrative ? 'is-active' : ''} key={item.name}><span>{String(index + 1).padStart(2, '0')}</span><p><strong>{item.name}</strong><small>{item.tokens} TOKENS · {usd(item.volume1h)} / 1H</small></p><b className={item.momentum >= 0 ? 'is-up' : 'is-down'}>{signed(item.momentum)}</b><i style={{ '--share': `${Math.min(100, Math.max(8, item.volume1h / Math.max(narratives[0]?.volume1h || 1, 1) * 100))}%` }} /></div>)}</div>
+        <div className="telemetry-narratives">{narratives.slice(0, 5).map((item, index) => <div className={item.name === token?.narrative ? 'is-active' : ''} key={item.name}><span>{String(index + 1).padStart(2, '0')}</span><p><strong>{item.name}</strong><small>{item.tokens} TOKENS Â· {usd(item.volume1h)} / 1H</small></p><b className={item.momentum >= 0 ? 'is-up' : 'is-down'}>{signed(item.momentum)}</b><i style={{ '--share': `${Math.min(100, Math.max(8, item.volume1h / Math.max(narratives[0]?.volume1h || 1, 1) * 100))}%` }} /></div>)}</div>
         <div className="telemetry-narrative__active"><span>SELECTED CLUSTER</span><strong>{token?.narrative || 'UNCLASSIFIED'}</strong><p>Classification is derived from public token metadata. It describes semantic proximity, not ownership or causality.</p></div>
       </article>
 
       <article className="telemetry-panel telemetry-panel--social">
         <header><span><MessageCircle size={12} /> SOCIAL SURFACE</span><b>{social.status === 'live' ? 'X SEARCH LIVE' : 'DECLARED LINKS'}</b></header>
-        <div className="telemetry-sentiment"><div style={{ '--positive': `${token?.sentimentPositive || 0}%` }}><strong>{Math.round(token?.sentimentPositive || 0)}%</strong><span>POSITIVE GT VOTES</span></div><dl><div><dt>SUSPICIOUS REPORTS</dt><dd>{token?.suspiciousReports || 0}</dd></div><div><dt>DECLARED CHANNELS</dt><dd>{token?.socials?.length || 0}</dd></div><div><dt>X MENTIONS</dt><dd>{social.data?.mentions ?? '—'}</dd></div></dl></div>
+        <div className="telemetry-sentiment"><div style={{ '--positive': `${token?.sentimentPositive || 0}%` }}><strong>{Math.round(token?.sentimentPositive || 0)}%</strong><span>POSITIVE GT VOTES</span></div><dl><div><dt>SUSPICIOUS REPORTS</dt><dd>{token?.suspiciousReports || 0}</dd></div><div><dt>DECLARED CHANNELS</dt><dd>{token?.socials?.length || 0}</dd></div><div><dt>X MENTIONS</dt><dd>{social.data?.mentions ?? 'â€”'}</dd></div></dl></div>
         <div className="telemetry-social-links">{token?.socials?.length ? token.socials.map((item) => <a href={item.url} target="_blank" rel="noreferrer" key={item.url}><Link2 size={10} /><span>{item.label || item.type}</span><b>{item.type}</b><ExternalLink size={9} /></a>) : <p>No website or social channel is declared in the current market metadata.</p>}</div>
         {social.status === 'needs-key' && <div className="telemetry-social-adapter"><ShieldAlert size={12} /><span><b>X RECENT SEARCH READY</b>Add X_BEARER_TOKEN server-side to activate verified mention and engagement counts.</span></div>}
         {social.status === 'live' && <div className="telemetry-social-live"><span><b>{social.data.mentions}</b> mentions</span><span><b>{compact.format(social.data.engagement)}</b> engagements</span><span><b>{social.data.verifiedAuthors}</b> verified authors</span></div>}
@@ -103,3 +101,4 @@ export default function MarketTelemetry({ token, narratives, telemetry, liquidit
     </div>
   </section>
 }
+

@@ -1,6 +1,6 @@
-# HypeGraph
+# machinelearn.ing
 
-HypeGraph is a near-live research terminal for mapping attention across Solana, Pump.fun and PumpSwap: narrative propagation, pool microstructure, paid boosts, wallet lineage, KOL impulses and adversarial signal quality.
+machinelearn.ing is a near-live research terminal for mapping attention across Solana, Pump.fun and PumpSwap: narrative propagation, pool microstructure, paid boosts, wallet lineage, KOL impulses and adversarial signal quality.
 
 The primary cockpit polls the public DexScreener API every 15 or 30 seconds, while its launch tape subscribes to the canonical Pump program logs and decodes the official `CreateEvent` IDL. It falls back to the frozen 25 August 2026 snapshot if the market source is unavailable. It is deliberately honest about its epistemic states:
 
@@ -8,7 +8,7 @@ The primary cockpit polls the public DexScreener API every 15 or 30 seconds, whi
 - `SIMULATED` scores and graph projections are deterministic frontend heuristics for product demonstration.
 - `TARGET STATE` labels describe infrastructure that is designed but not provisioned.
 
-The interface has no trade execution, wallet signing or fabricated “live” feed.
+The interface has no trade execution, wallet signing or fabricated â€œliveâ€ feed.
 
 ## Run locally
 
@@ -69,7 +69,7 @@ The live frontend only calls documented DexScreener endpoints and the standard S
 
 ## Pump.fun launch ingestion
 
-The official Pump repository exposes programs, IDLs and SDKs, not a hosted REST endpoint that returns every launch. HypeGraph therefore uses the canonical on-chain source:
+The official Pump repository exposes programs, IDLs and SDKs, not a hosted REST endpoint that returns every launch. machinelearn.ing therefore uses the canonical on-chain source:
 
 - live: `logsSubscribe` on `6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P`, then Borsh decoding of the official `CreateEvent` discriminator;
 - historical: pagination through `getSignaturesForAddress`, transaction retrieval and the same decoder;
@@ -121,7 +121,7 @@ Each laboratory reacts to the selected asset and sensitivity control. Its formul
 ```text
 src/App.jsx                     Main interactive research surface
 src/components/LiveTerminal.jsx Near-live market war room
-src/index.css                   Responsive HypeGraph design system
+src/index.css                   Responsive machinelearn.ing design system
 src/data/marketSnapshot.js      Frozen observed data + demo inference
 src/data/signalLabs.js          Ten deterministic research evaluators
 src/hooks/useLiveMarket.js       Polling, price history and delta events
@@ -129,8 +129,9 @@ src/hooks/usePumpLaunchStream.js Canonical Pump log subscription
 src/services/liveMarketService.js DexScreener join and normalization
 src/services/pumpEventDecoder.js Official Pump CreateEvent decoder
 scripts/backfill-pump-launches.mjs Historical launch NDJSON export
-public/assets/hypegraph-manifold.png
+public/assets/machinelearn.ing-manifold.png
                                 Original ImageGen hero artwork
 docs/DATA_METHODOLOGY.md        Sources, labels and calculation policy
 docs/INTEGRATION_CHECKLIST.md    Production backend handoff
 ```
+

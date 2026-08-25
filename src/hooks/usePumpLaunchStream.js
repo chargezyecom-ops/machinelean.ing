@@ -1,69 +1,51 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { extractPumpCreateEvents, PUMP_PROGRAM_ID } from '../services/pumpEventDecoder.js'
+﻿import { useEffect, useMemo, useRef, useState } from 'react'
 
-const DEFAULT_WS_URL = 'wss://api.mainnet-beta.solana.com'
-const MAX_LAUNCHES = 60
+const MAX_LAUNCHES = 200
 
 export function usePumpLaunchStream() {
   const [launches, setLaunches] = useState([])
   const [status, setStatus] = useState('connecting')
   const [error, setError] = useState('')
+  const [backfillProgress, setBackfillProgress] = useState(null)
   const seen = useRef(new Set())
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || ''
-  const apiEnabled = import.meta.env.VITE_RESEARCH_API_ENABLED === 'true' && Boolean(apiBaseUrl)
-  const apiStreamUrl = apiEnabled ? `${apiBaseUrl.replace(/^http/, 'ws')}/v1/stream` : ''
-  const wsUrl = apiStreamUrl || import.meta.env.VITE_SOLANA_WS_URL || DEFAULT_WS_URL
-  const commitment = import.meta.env.VITE_PUMP_COMMITMENT || 'confirmed'
 
   useEffect(() => {
     if (import.meta.env.MODE === 'test') return undefined
     if (typeof WebSocket === 'undefined') { setStatus('unsupported'); return undefined }
+
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8787/api'
+    const wsUrl = apiBase.replace(/^http/, 'ws') + '/v1/stream'
+
     let socket
     let reconnectTimer
     let cancelled = false
     let attempts = 0
-    const controller = new AbortController()
-
-    const hydrateRecentLaunches = async () => {
-      if (!apiEnabled) return
-      try {
-        const response = await fetch(`${apiBaseUrl}/v1/launches?limit=24`, { signal: controller.signal })
-        if (!response.ok) return
-        const payload = await response.json()
-        if (cancelled || !Array.isArray(payload.data)) return
-        const incoming = payload.data.flatMap((launch) => {
-          const id = launch.id || `${launch.signature}:${launch.mint}`
-          if (seen.current.has(id)) return []
-          seen.current.add(id)
-          return [{ ...launch, id }]
-        })
-        if (incoming.length) setLaunches((current) => [...incoming, ...current].slice(0, MAX_LAUNCHES))
-      } catch (cause) {
-        if (!(cause instanceof Error && cause.name === 'AbortError')) setError('Unable to preload recent creation events')
-      }
-    }
 
     const connect = () => {
       if (cancelled) return
       setStatus(attempts ? 'reconnecting' : 'connecting')
       socket = new WebSocket(wsUrl)
+
       socket.addEventListener('open', () => {
         attempts = 0
         setError('')
-        if (apiEnabled) { setStatus('live'); return }
-        socket.send(JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'logsSubscribe',
-          params: [{ mentions: [PUMP_PROGRAM_ID] }, { commitment }],
-        }))
       })
+
       socket.addEventListener('message', (event) => {
         try {
           const payload = JSON.parse(event.data)
-          if (apiEnabled) {
-            if (payload.type === 'system.ready' || payload.type === 'system.pump_status') { setStatus(payload.data?.state === 'live' ? 'live' : payload.data?.state || 'connecting'); return }
-            if (payload.type !== 'launch.created' || !payload.data) return
+
+          if (payload.type === 'system.ready') {
+            setStatus(payload.data?.pump?.state === 'live' ? 'live' : 'connecting')
+            return
+          }
+
+          if (payload.type === 'system.pump_status') {
+            setStatus(payload.data?.state === 'live' ? 'live' : payload.data?.state || 'connecting')
+            return
+          }
+
+          if (payload.type === 'launch.created' && payload.data) {
             const launch = payload.data
             const id = launch.id || `${launch.signature}:${launch.mint}`
             if (seen.current.has(id)) return
@@ -71,24 +53,26 @@ export function usePumpLaunchStream() {
             setLaunches((current) => [{ ...launch, id }, ...current].slice(0, MAX_LAUNCHES))
             return
           }
-          if (payload.id === 1 && payload.result) { setStatus('live'); return }
-          const result = payload.params?.result
-          if (!result?.value || result.value.err) return
-          const decoded = extractPumpCreateEvents(result.value.logs)
-          if (!decoded.length) return
-          const observedAt = new Date().toISOString()
-          const incoming = decoded.flatMap((launch) => {
-            const id = `${result.value.signature}:${launch.mint}`
-            if (seen.current.has(id)) return []
-            seen.current.add(id)
-            return [{ ...launch, id, signature: result.value.signature, slot: result.context?.slot, observedAt }]
-          })
-          if (incoming.length) setLaunches((current) => [...incoming, ...current].slice(0, MAX_LAUNCHES))
-        } catch (cause) {
-          setError(cause instanceof Error ? cause.message : 'Invalid Pump event')
-        }
+
+          if (payload.type === 'backfill.progress') {
+            setBackfillProgress(payload.data)
+            return
+          }
+
+          if (payload.type === 'backfill.complete') {
+            setBackfillProgress({ ...payload.data, phase: 'complete' })
+            // Refresh launches
+            fetch(`${apiBase}/v1/launches?limit=200`).then((r) => r.json()).then((json) => {
+              if (json.data) {
+                setLaunches(json.data)
+              }
+            }).catch(() => {})
+            return
+          }
+        } catch { /* ignore */ }
       })
-      socket.addEventListener('error', () => setError('Solana WebSocket unavailable'))
+
+      socket.addEventListener('error', () => setError('WebSocket unavailable'))
       socket.addEventListener('close', () => {
         if (cancelled) return
         attempts += 1
@@ -97,26 +81,29 @@ export function usePumpLaunchStream() {
       })
     }
 
-    hydrateRecentLaunches()
     connect()
+
     return () => {
       cancelled = true
-      controller.abort()
-      window.clearTimeout(reconnectTimer)
+      clearTimeout(reconnectTimer)
       socket?.close()
     }
-  }, [apiBaseUrl, apiEnabled, commitment, wsUrl])
+  }, [])
 
   const stats = useMemo(() => {
     const now = Date.now()
-    const lastMinute = launches.filter((launch) => now - new Date(launch.observedAt).getTime() < 60000)
+    const lastMinute = launches.filter((l) => {
+      const ts = l.timestamp ? l.timestamp * 1000 : new Date(l.observedAt).getTime()
+      return now - ts < 60000
+    })
     return {
       session: launches.length,
       perMinute: lastMinute.length,
-      mayhem: launches.filter((launch) => launch.isMayhemMode).length,
-      cashback: launches.filter((launch) => launch.isCashbackEnabled).length,
+      mayhem: launches.filter((l) => l.isMayhemMode).length,
+      cashback: launches.filter((l) => l.isCashbackEnabled).length,
     }
   }, [launches])
 
-  return { launches, status, error, stats, wsUrl, commitment }
+  return { launches, status, error, stats, backfillProgress }
 }
+

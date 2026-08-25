@@ -1,15 +1,15 @@
-{
+﻿{
   "id": "/",
-  "name": "HypeGraph — Pump.fun Market Intelligence",
-  "short_name": "HypeGraph",
-  "description": "Real-time research interface for trending Pump.fun markets, liquidity, transactions, narratives, creators and social signals.",
+  "name": "ML ENGINE — Pump.fun Market Intelligence",
+  "short_name": "ML ENGINE",
+  "description": "Real-time Pump.fun market intelligence: live token launches, liquidity rotation, narrative clustering and trench signal radar.",
   "lang": "en",
   "dir": "ltr",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#050706",
-  "theme_color": "#050706",
+  "background_color": "#050606",
+  "theme_color": "#050606",
   "categories": ["finance", "business", "productivity"],
   "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
 }
