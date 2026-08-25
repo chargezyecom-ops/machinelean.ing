@@ -7,7 +7,7 @@ function response(data) {
   return Promise.resolve({ ok: true, json: () => Promise.resolve(data) })
 }
 
-describe('DexScreener live market adapter', () => {
+describe('Pump.fun live market adapter', () => {
   afterEach(() => vi.unstubAllGlobals())
 
   it('joins boost metadata with the deepest Solana pair and derives research signals', async () => {
@@ -32,5 +32,13 @@ describe('DexScreener live market adapter', () => {
   it('rejects an empty Solana universe', async () => {
     vi.stubGlobal('fetch', vi.fn(() => response([])))
     await expect(fetchLiveMarket()).rejects.toThrow('No Solana profiles returned')
+  })
+
+  it('rejects Solana profiles outside the Pump.fun universe', async () => {
+    vi.stubGlobal('fetch', vi.fn((url) => {
+      if (url.includes('/token-boosts/top/')) return response([{ chainId: 'solana', tokenAddress: 'NotAPumpMint111', totalAmount: 10 }])
+      return response([])
+    }))
+    await expect(fetchLiveMarket()).rejects.toThrow('No Pump.fun profiles returned')
   })
 })

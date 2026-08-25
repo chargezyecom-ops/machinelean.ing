@@ -104,14 +104,17 @@ export async function fetchLiveMarket(signal) {
   ingest(takeovers, 'takeover')
   ingest(profiles, 'profile')
 
-  const selected = [...metadata.values()].slice(0, 28)
-  if (!selected.length) throw new Error('No Solana profiles returned')
+  if (!metadata.size) throw new Error('No Solana profiles returned')
+  const selected = [...metadata.values()].filter((item) => item.tokenAddress?.endsWith('pump')).slice(0, 28)
+  if (!selected.length) throw new Error('No Pump.fun profiles returned')
   const addresses = selected.map((item) => item.tokenAddress).join(',')
   const pairs = await fetchJson(`${DEX_BASE}/tokens/v1/solana/${addresses}`, signal)
   const tokens = selected
     .map((meta) => normalizePair(meta, bestPairForToken(pairs, meta.tokenAddress)))
-    .filter((token) => token.price || token.volume24)
+    .filter((token) => token.isPump && (token.price || token.volume24))
     .sort((a, b) => b.volume1h - a.volume1h)
+
+  if (!tokens.length) throw new Error('No Pump.fun market objects returned')
 
   return {
     fetchedAt: new Date().toISOString(),

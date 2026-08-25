@@ -4,6 +4,7 @@ import { tokens as snapshotTokens } from '../data/marketSnapshot.js'
 import { useLiveMarket } from '../hooks/useLiveMarket.js'
 import { usePumpLaunchStream } from '../hooks/usePumpLaunchStream.js'
 import { PUMP_IDL_URL, PUMP_PROGRAM_ID } from '../services/pumpEventDecoder.js'
+import PumpHistoricalLab from './PumpHistoricalLab.jsx'
 
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 })
 const signed = (value) => `${value >= 0 ? '+' : ''}${Number(value || 0).toFixed(Math.abs(value) >= 100 ? 0 : 2)}%`
@@ -109,7 +110,7 @@ export default function LiveTerminal() {
       <div className="shell war-frame">
         <div className="war-topbar">
           <div className="war-brand"><b>HG</b><span>HYPEGRAPH / LIVE NARRATIVE OS</span></div>
-          <div className="war-status"><span className={isLive ? 'is-live' : 'is-degraded'}><i />{isLive ? 'DEXSCREENER LIVE' : live.loading ? 'CONNECTING' : 'SNAPSHOT FALLBACK'}</span><span className={pump.status === 'live' ? 'is-live' : 'is-degraded'}><i />PUMP / {pump.status.toUpperCase()}</span><span>CHAIN / SOLANA</span><span>{clock.toISOString().slice(11, 19)} UTC</span></div>
+          <div className="war-status"><span className={isLive ? 'is-live' : 'is-degraded'}><i />{isLive ? 'PUMP MARKET LIVE' : live.loading ? 'CONNECTING' : 'SNAPSHOT FALLBACK'}</span><span className={pump.status === 'live' ? 'is-live' : 'is-degraded'}><i />PUMP / {pump.status.toUpperCase()}</span><span>UNIVERSE / PUMP.FUN</span><span>{clock.toISOString().slice(11, 19)} UTC</span></div>
         </div>
         <div className="war-toolbar">
           <div className="war-modes">{['ALL', 'PUMP', 'NEW', 'BOOSTED', 'RISK'].map((item) => <button className={mode === item ? 'is-active' : ''} onClick={() => setMode(item)} type="button" key={item}>{item}</button>)}</div>
@@ -133,7 +134,7 @@ export default function LiveTerminal() {
           <Metric label="AGGREGATE 24H" value={usd(stats.volume24)} delta="selected live universe" tone="blue" />
           <Metric label="VISIBLE DEPTH" value={usd(stats.liquidity)} delta="best pair per mint" />
           <Metric label="ACTIVE BOOST MASS" value={compact.format(stats.boosts)} delta="paid visibility input" tone="orange" />
-          <Metric label="PUMP ENTITIES" value={`${stats.pumps}/${rows.length}`} delta="pumpfun + pumpswap" tone="violet" />
+          <Metric label="PUMP ENTITIES" value={`${stats.pumps}/${rows.length}`} delta="launch → pumpswap lifecycle" tone="violet" />
         </div>
 
         <div className="war-panel war-launches">
@@ -194,8 +195,9 @@ export default function LiveTerminal() {
         <div className="war-bottom-grid">
           <div className="war-panel war-events"><div className="war-panel__head"><span>C1 / DELTA EVENT BUS</span><b>{live.events.length ? 'OBSERVED BETWEEN POLLS' : 'INITIAL MARKET STATE'}</b></div><div className="war-events__list">{events.slice(0, 9).map((event) => <div key={event.id}><time>{new Date(event.at).toISOString().slice(11,19)}</time><i className={event.kind} /><strong>${event.symbol}</strong><span>{event.kind === 'impulse' ? 'PRICE IMPULSE' : 'ATTENTION DECAY'}</span><b className={event.delta >= 0 ? 'up' : 'down'}>{signed(event.delta)}</b><small>{formatPrice(event.price)}</small></div>)}</div></div>
           <div className="war-panel war-entities"><div className="war-panel__head"><span>C2 / ENTITY & WALLET GRAPH</span><b>PARTIAL RESOLUTION</b></div><div className="war-entity-grid">{rows.slice(0, 5).map((token, index) => <div key={token.address}><span className="war-entity-node"><Network size={12} /></span><p><strong>ENTITY {String(index + 1).padStart(2,'0')} / ${token.symbol}</strong><small>{shortAddress(token.pairAddress || token.address)} · {token.buys5m + token.sells5m} tx/5m</small></p><b>{token.ml.confidence}%</b></div>)}</div><div className="war-wallet-adapter"><Database size={13} /><span><b>WALLET IDENTITY ADAPTER REQUIRED</b>Connect Helius to resolve creator, funder, KOL and sniper lineages at transaction level.</span></div></div>
-          <div className="war-panel war-system"><div className="war-panel__head"><span>C3 / SYSTEM TELEMETRY</span><b>{isLive && pump.status === 'live' ? 'NOMINAL' : 'DEGRADED'}</b></div><dl><div><dt>Market source</dt><dd>DEX Screener API</dd></div><div><dt>Launch source</dt><dd>Pump program logs</dd></div><div><dt>Pump stream</dt><dd>{pump.status}</dd></div><div><dt>Commitment</dt><dd>{pump.commitment}</dd></div><div><dt>Execution</dt><dd>disabled</dd></div></dl><div className="war-system__footer"><Cpu size={13} /> CANONICAL IDL DECODER / BROWSER EDGE</div></div>
+          <div className="war-panel war-system"><div className="war-panel__head"><span>C3 / SYSTEM TELEMETRY</span><b>{isLive && pump.status === 'live' ? 'NOMINAL' : 'DEGRADED'}</b></div><dl><div><dt>Universe</dt><dd>Pump.fun only</dd></div><div><dt>Launch source</dt><dd>Pump program logs</dd></div><div><dt>Market enrichment</dt><dd>public pair data</dd></div><div><dt>Pump stream</dt><dd>{pump.status}</dd></div><div><dt>Execution</dt><dd>disabled</dd></div></dl><div className="war-system__footer"><Cpu size={13} /> CANONICAL IDL DECODER / BROWSER EDGE</div></div>
         </div>
+        <PumpHistoricalLab />
         <div className="war-legal"><Radar size={11} /><span>PUBLIC MARKET DATA · READ ONLY · BOOSTS ARE PAID VISIBILITY, NOT ORGANIC SENTIMENT · ML OUTPUTS ARE HEURISTICS, NOT FORECASTS</span><span>{live.loading ? 'SYNCING…' : 'FRAME COMPLETE'}</span></div>
       </div>
     </section>

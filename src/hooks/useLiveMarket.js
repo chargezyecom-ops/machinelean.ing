@@ -32,9 +32,10 @@ export function useLiveMarket(intervalMs = 15000) {
   }, [])
 
   useEffect(() => {
-    refresh()
+    const safelyRefresh = () => { refresh().catch(() => {}) }
+    safelyRefresh()
     if (!intervalMs) return () => controller.current?.abort()
-    const timer = window.setInterval(refresh, intervalMs)
+    const timer = window.setInterval(safelyRefresh, intervalMs)
     return () => { window.clearInterval(timer); controller.current?.abort() }
   }, [intervalMs, refresh])
 
