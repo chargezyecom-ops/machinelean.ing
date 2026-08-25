@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Activity, ChevronDown, CircleDot, Cpu, Database, ExternalLink, Network, Radio, Radar, Search, ShieldAlert, Zap } from 'lucide-react'
+import { Activity, ChevronDown, CircleDot, Cpu, Database, ExternalLink, Flame, Gauge, Network, Radio, Radar, Search, ShieldAlert, TrendingUp, Zap } from 'lucide-react'
 import { tokens as snapshotTokens } from '../data/marketSnapshot.js'
 import { useLiveMarket } from '../hooks/useLiveMarket.js'
 import { usePumpLaunchStream } from '../hooks/usePumpLaunchStream.js'
@@ -95,6 +95,9 @@ export default function LiveTerminal() {
   const chartValues = liveHistory.length > 1 ? liveHistory : selected?.fallbackSeries || [selected?.price || 1, selected?.price || 1]
   const initialEvents = rows.slice(0, 8).map((token, index) => ({ id: token.address, symbol: token.symbol, delta: token.change5m, price: token.price, kind: token.change5m >= 0 ? 'impulse' : 'decay', at: new Date(Date.now() - index * 11000).toISOString() }))
   const events = live.events.length ? live.events : initialEvents
+  const topSignal = [...rows].sort((a, b) => b.ml.fomo - a.ml.fomo)[0]
+  const expanding = rows.filter((token) => token.change5m > 0).length
+  const marketBias = expanding >= rows.length * .6 ? 'RISK-ON EXPANSION' : expanding <= rows.length * .4 ? 'ATTENTION DECAY' : 'ROTATIONAL FLOW'
 
   return (
     <section className="war-room" id="live-terminal" aria-labelledby="war-room-title">
@@ -117,6 +120,13 @@ export default function LiveTerminal() {
         </div>
 
         {live.error && <div className="war-alert"><ShieldAlert size={12} /> Live API unavailable: {live.error}. Frozen research data remains visible.</div>}
+
+        <div className="war-signal-banner" aria-label="Synthèse instantanée du marché">
+          <div className="war-signal-banner__pulse"><Flame size={19} /><span>DOMINANT SIGNAL</span><strong>${topSignal?.symbol || '—'}</strong><em>FOMO {topSignal?.ml.fomo || 0}</em></div>
+          <div><TrendingUp size={16} /><span>MARKET REGIME</span><strong>{marketBias}</strong><small>{expanding}/{rows.length} assets expanding / 5m</small></div>
+          <div><Gauge size={16} /><span>ATTENTION LEADER</span><strong>{topSignal?.narrative || 'UNRESOLVED'}</strong><small>{usd(topSignal?.volume1h)} observed 1h flow</small></div>
+          <div className="war-signal-banner__latency"><CircleDot size={15} /><span>SYSTEM PULSE</span><strong>{poll ? `${poll / 1000} SEC` : 'PAUSED'}</strong><small>{isLive ? 'public market fabric active' : 'research fallback active'}</small></div>
+        </div>
 
         <div className="war-metrics">
           <Metric label="MONITORED 1H FLOW" value={usd(stats.volume1h)} delta={`${rows.length} resolved assets`} tone="green" />
