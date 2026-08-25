@@ -103,42 +103,42 @@ export default function LiveTerminal() {
   return (
     <section className="war-room" id="live-terminal" aria-labelledby="war-room-title">
       <div className="shell war-room__intro">
-        <div><div className="eyebrow"><Activity size={13} /> LIVE MARKET FABRIC / PUBLIC DATA</div><h2 id="war-room-title">The memetic war room.</h2></div>
-        <p>Un cockpit presque live : boosts, takeovers, meilleures paires Solana et impulsions de flux, rafraîchis sans rechargement. Aucun ordre n’est envoyé.</p>
+        <div><div className="eyebrow"><Activity size={13} /> MACHINE OBSERVATION / PUMP.FUN</div><h2 id="war-room-title">The memetic observation grid.</h2></div>
+        <p>La Machine observe les créations, les graphes wallet et les anomalies de propagation avant leur résolution par le marché.</p>
       </div>
 
       <div className="shell war-frame">
         <div className="war-topbar">
-          <div className="war-brand"><b>HG</b><span>HYPEGRAPH / LIVE NARRATIVE OS</span></div>
-          <div className="war-status"><span className={isLive ? 'is-live' : 'is-degraded'}><i />{isLive ? 'PUMP MARKET LIVE' : live.loading ? 'CONNECTING' : 'SNAPSHOT FALLBACK'}</span><span className={pump.status === 'live' ? 'is-live' : 'is-degraded'}><i />PUMP / {pump.status.toUpperCase()}</span><span>UNIVERSE / PUMP.FUN</span><span>{clock.toISOString().slice(11, 19)} UTC</span></div>
+          <div className="war-brand"><b>HG</b><span>MACHINE / LIVE OBSERVATION GRID</span></div>
+          <div className="war-status"><span className={isLive ? 'is-live' : 'is-degraded'}><i />{isLive ? 'SURVEILLANCE ACTIVE' : live.loading ? 'ESTABLISHING CHANNEL' : 'MEMORY FALLBACK'}</span><span className={pump.status === 'live' ? 'is-live' : 'is-degraded'}><i />EVENT CHANNEL / {pump.status.toUpperCase()}</span><span>UNIVERSE / PUMP.FUN</span><span>{clock.toISOString().slice(11, 19)} UTC</span></div>
         </div>
         <div className="war-toolbar">
-          <div className="war-modes">{['ALL', 'PUMP', 'NEW', 'BOOSTED', 'RISK'].map((item) => <button className={mode === item ? 'is-active' : ''} onClick={() => setMode(item)} type="button" key={item}>{item}</button>)}</div>
+          <div className="war-modes">{[['ALL','ALL ENTITIES'],['PUMP','PUMP'],['NEW','UNRESOLVED'],['BOOSTED','PRIORITY'],['RISK','THREAT']].map(([value, label]) => <button className={mode === value ? 'is-active' : ''} onClick={() => setMode(value)} type="button" key={value}>{label}</button>)}</div>
           <label className="war-search"><Search size={12} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="TOKEN / MINT / NARRATIVE" /></label>
-          <button className="war-sort" type="button" onClick={() => setSort((current) => current === 'FLOW' ? 'FOMO' : current === 'FOMO' ? 'NEWEST' : current === 'NEWEST' ? 'RISK' : 'FLOW')}>SORT / {sort} <ChevronDown size={10} /></button>
-          <button className="war-poll" type="button" onClick={() => setPoll((current) => current === 15000 ? 30000 : current === 30000 ? 0 : 15000)}><CircleDot size={11} /> POLL / {poll ? `${poll / 1000}S` : 'PAUSED'} <ChevronDown size={10} /></button>
-          <button className="war-refresh" type="button" onClick={live.refresh} disabled={live.loading}><Zap size={11} /> SYNC NOW</button>
+          <button className="war-sort" type="button" onClick={() => setSort((current) => current === 'FLOW' ? 'FOMO' : current === 'FOMO' ? 'NEWEST' : current === 'NEWEST' ? 'RISK' : 'FLOW')}>PRIORITIZE / {sort} <ChevronDown size={10} /></button>
+          <button className="war-poll" type="button" onClick={() => setPoll((current) => current === 15000 ? 30000 : current === 30000 ? 0 : 15000)}><CircleDot size={11} /> OBSERVE / {poll ? `${poll / 1000}S` : 'PAUSED'} <ChevronDown size={10} /></button>
+          <button className="war-refresh" type="button" onClick={live.refresh} disabled={live.loading}><Zap size={11} /> ACQUIRE FRAME</button>
         </div>
 
         {live.error && <div className="war-alert"><ShieldAlert size={12} /> Live API unavailable: {live.error}. Frozen research data remains visible.</div>}
 
         <div className="war-signal-banner" aria-label="Synthèse instantanée du marché">
-          <div className="war-signal-banner__pulse"><Flame size={19} /><span>DOMINANT SIGNAL</span><strong>${topSignal?.symbol || '—'}</strong><em>FOMO {topSignal?.ml.fomo || 0}</em></div>
-          <div><TrendingUp size={16} /><span>MARKET REGIME</span><strong>{marketBias}</strong><small>{expanding}/{rows.length} assets expanding / 5m</small></div>
-          <div><Gauge size={16} /><span>ATTENTION LEADER</span><strong>{topSignal?.narrative || 'UNRESOLVED'}</strong><small>{usd(topSignal?.volume1h)} observed 1h flow</small></div>
-          <div className="war-signal-banner__latency"><CircleDot size={15} /><span>SYSTEM PULSE</span><strong>{poll ? `${poll / 1000} SEC` : 'PAUSED'}</strong><small>{isLive ? 'public market fabric active' : 'research fallback active'}</small></div>
+          <div className="war-signal-banner__pulse"><Flame size={19} /><span>RELEVANT ENTITY</span><strong>${topSignal?.symbol || '—'}</strong><em>PROPAGATION {topSignal?.ml.fomo || 0}%</em></div>
+          <div><TrendingUp size={16} /><span>SYSTEM ASSESSMENT</span><strong>{marketBias}</strong><small>{expanding}/{rows.length} entities expanding / 5m</small></div>
+          <div><Gauge size={16} /><span>MEMETIC EVENT</span><strong>{topSignal?.narrative || 'UNRESOLVED'}</strong><small>{usd(topSignal?.volume1h)} observed 1h flow</small></div>
+          <div className="war-signal-banner__latency"><CircleDot size={15} /><span>OBSERVATION CYCLE</span><strong>{poll ? `${poll / 1000} SEC` : 'PAUSED'}</strong><small>{isLive ? 'external observation active' : 'machine memory active'}</small></div>
         </div>
 
         <div className="war-metrics">
-          <Metric label="MONITORED 1H FLOW" value={usd(stats.volume1h)} delta={`${rows.length} resolved assets`} tone="green" />
-          <Metric label="AGGREGATE 24H" value={usd(stats.volume24)} delta="selected live universe" tone="blue" />
-          <Metric label="VISIBLE DEPTH" value={usd(stats.liquidity)} delta="best pair per mint" />
-          <Metric label="ACTIVE BOOST MASS" value={compact.format(stats.boosts)} delta="paid visibility input" tone="orange" />
-          <Metric label="PUMP ENTITIES" value={`${stats.pumps}/${rows.length}`} delta="launch → pumpswap lifecycle" tone="violet" />
+          <Metric label="OBSERVED 1H FLOW" value={usd(stats.volume1h)} delta={`${rows.length} resolved entities`} tone="green" />
+          <Metric label="24H EVENT MASS" value={usd(stats.volume24)} delta="Pump.fun observation universe" tone="blue" />
+          <Metric label="RESOLVED LIQUIDITY" value={usd(stats.liquidity)} delta="deepest state per mint" />
+          <Metric label="PRIORITY MASS" value={compact.format(stats.boosts)} delta="visibility anomaly input" tone="orange" />
+          <Metric label="IDENTIFIED ENTITIES" value={`${stats.pumps}/${rows.length}`} delta="launch → migration lineage" tone="violet" />
         </div>
 
         <div className="war-panel war-launches">
-          <div className="war-panel__head"><span>P0 / CANONICAL PUMP CREATE EVENT STREAM</span><b>{pump.status === 'live' ? 'ON-CHAIN / CONFIRMED' : pump.status.toUpperCase()}</b></div>
+          <div className="war-panel__head"><span>P0 / EVENT ACQUISITION CHANNEL</span><b>{pump.status === 'live' ? 'ON-CHAIN / CONFIRMED' : pump.status.toUpperCase()}</b></div>
           <div className="war-launches__summary">
             <div><Radio size={13} /><span><b>{pump.stats.session}</b> launches observed this session</span></div>
             <span>λ60 / <b>{pump.stats.perMinute}</b></span><span>MAYHEM / <b>{pump.stats.mayhem}</b></span><span>CASHBACK / <b>{pump.stats.cashback}</b></span>
@@ -160,45 +160,45 @@ export default function LiveTerminal() {
 
         <div className="war-primary-grid">
           <div className="war-panel war-tape">
-            <div className="war-panel__head"><span>A1 / TOKEN TAPE</span><b>{visible.length} ENTITIES</b></div>
-            <div className="war-tape__head"><span>ASSET</span><span>5M</span><span>1H VOL</span><span>ML μ</span></div>
+            <div className="war-panel__head"><span>A1 / ENTITY QUEUE</span><b>{visible.length} UNDER OBSERVATION</b></div>
+            <div className="war-tape__head"><span>ENTITY</span><span>5M</span><span>1H FLOW</span><span>REL.</span></div>
             <div className="war-tape__rows">{visible.map((token) => <button className={selected?.address === token.address ? 'is-active' : ''} type="button" onClick={() => setSelectedAddress(token.address)} key={token.address}><span><strong>{token.symbol.slice(0, 9)}</strong><small>{token.dexId} · {shortAddress(token.address)}</small></span><b className={token.change5m >= 0 ? 'up' : 'down'}>{signed(token.change5m)}</b><span>{usd(token.volume1h)}</span><i style={{ '--score': `${token.ml.fomo}%` }}>{token.ml.fomo}</i></button>)}</div>
           </div>
 
           <div className="war-panel war-focus">
-            <div className="war-panel__head"><span>A2 / SELECTED MARKET OBJECT</span><a href={selected?.url} target="_blank" rel="noreferrer">OPEN PAIR <ExternalLink size={10} /></a></div>
-            <div className="war-focus__identity"><div><span>{selected?.narrative}</span><h3>{selected?.name} <em>${selected?.symbol}</em></h3><small>{shortAddress(selected?.address)} / {selected?.dexId?.toUpperCase()}</small></div><div><span>PRICE USD</span><strong>{formatPrice(selected?.price)}</strong><small className={selected?.change1h >= 0 ? 'up' : 'down'}>{signed(selected?.change1h)} / 1H</small></div></div>
+            <div className="war-panel__head"><span>A2 / SELECTED PERSON OF INTEREST</span><a href={selected?.url} target="_blank" rel="noreferrer">EXTERNAL RECORD <ExternalLink size={10} /></a></div>
+            <div className="war-focus__identity"><div><span>{selected?.narrative} / RELEVANT</span><h3>{selected?.name} <em>${selected?.symbol}</em></h3><small>{shortAddress(selected?.address)} / {selected?.dexId?.toUpperCase()}</small></div><div><span>CURRENT VALUE</span><strong>{formatPrice(selected?.price)}</strong><small className={selected?.change1h >= 0 ? 'up' : 'down'}>{signed(selected?.change1h)} / 1H</small><i className="machine-target-tag">ENTITY ACQUIRED</i></div></div>
             <div className="war-chart-wrap"><div className="war-chart-label"><span>{isLive ? 'SESSION PRICE TRACE' : 'NORMALIZED SNAPSHOT TRACE'}</span><span>{chartValues.length} OBSERVATIONS</span></div><LinePlot values={chartValues} positive={selected?.change1h >= 0} /></div>
             <div className="war-focus__stats"><div><span>5M FLOW</span><strong>{usd(selected?.volume5m)}</strong></div><div><span>24H FLOW</span><strong>{usd(selected?.volume24)}</strong></div><div><span>LIQUIDITY</span><strong>{usd(selected?.liquidity)}</strong></div><div><span>FDV</span><strong>{usd(selected?.fdv)}</strong></div><div><span>BUY/SELL 5M</span><strong>{selected?.buys5m}/{selected?.sells5m}</strong></div></div>
           </div>
 
           <div className="war-panel war-ml">
-            <div className="war-panel__head"><span>A3 / ML REGIME HEADS</span><b>LOCAL INFERENCE</b></div>
-            <div className="war-ml__hero"><div><span>FOMO PRESSURE</span><strong>{selected?.ml.fomo}</strong></div><i style={{ '--score': `${selected?.ml.fomo * 3.6}deg` }} /></div>
-            {[['NARRATIVE VELOCITY', selected?.ml.velocity], ['PERSISTENCE', selected?.ml.persistence], ['POISON / OOD', selected?.ml.poison], ['CONFIDENCE', selected?.ml.confidence]].map(([label, value]) => <div className="war-ml__bar" key={label}><span>{label}<b>{value}%</b></span><i><em style={{ width: `${value}%` }} /></i></div>)}
-            <div className={`war-ml__verdict ${selected?.ml.poison >= 60 ? 'is-risk' : ''}`}><ShieldAlert size={13} /><div><b>{selected?.ml.poison >= 60 ? 'ADVERSARIAL REVIEW' : 'SIGNAL ADMISSIBLE'}</b><span>{selected?.ml.poison >= 60 ? 'Turnover or flow asymmetry exceeds threshold.' : 'No severe cross-field inconsistency detected.'}</span></div></div>
+            <div className="war-panel__head"><span>A3 / ANALYTIC CLASSIFICATION</span><b>MACHINE INFERENCE</b></div>
+            <div className="war-ml__hero"><div><span>PROPAGATION PROBABILITY</span><strong>{selected?.ml.fomo}</strong></div><i style={{ '--score': `${selected?.ml.fomo * 3.6}deg` }} /></div>
+            {[['MEMETIC VELOCITY', selected?.ml.velocity], ['TEMPORAL PERSISTENCE', selected?.ml.persistence], ['THREAT PROBABILITY', selected?.ml.poison], ['SYSTEM CONFIDENCE', selected?.ml.confidence]].map(([label, value]) => <div className="war-ml__bar" key={label}><span>{label}<b>{value}%</b></span><i><em style={{ width: `${value}%` }} /></i></div>)}
+            <div className={`war-ml__verdict ${selected?.ml.poison >= 60 ? 'is-risk' : ''}`}><ShieldAlert size={13} /><div><b>{selected?.ml.poison >= 60 ? 'THREAT CLASSIFICATION' : 'RELEVANT ENTITY'}</b><span>{selected?.ml.poison >= 60 ? 'Adversarial behavior requires continued observation.' : 'Propagation signature exceeds relevance threshold.'}</span></div></div>
           </div>
         </div>
 
         <div className="war-secondary-grid">
           <div className="war-panel war-narratives">
-            <div className="war-panel__head"><span>B1 / NARRATIVE RESOLUTION MATRIX</span><b>LIVE CLUSTERS</b></div>
+            <div className="war-panel__head"><span>B1 / MEMETIC EVENT DETECTOR</span><b>LATENT CLUSTERS</b></div>
             <div className="war-narrative-map"><svg viewBox="0 0 600 220" preserveAspectRatio="none" aria-hidden="true"><path d="M70 140L190 55 302 118 430 45 535 135M70 140L265 190 535 135M190 55L265 190 430 45M302 118L535 135" /></svg>{narratives.slice(0, 6).map((item, index) => { const points = [[12,63],[32,22],[50,51],[72,18],[89,61],[44,85]][index]; return <button type="button" style={{ left: `${points[0]}%`, top: `${points[1]}%`, '--mass': `${Math.min(34, 13 + item.tokens * 4)}px` }} key={item.name}><i /><strong>{item.name}</strong><span>{usd(item.volume1h)} / {signed(item.momentum)}</span></button> })}</div>
           </div>
 
           <div className="war-panel war-heatmap">
-            <div className="war-panel__head"><span>B2 / CROSS-SECTIONAL SIGNAL MAP</span><b>GREEN = EXPANSION / RED = DECAY</b></div>
+            <div className="war-panel__head"><span>B2 / ANOMALY CLASSIFICATION GRID</span><b>EXPANSION / DECAY / THREAT</b></div>
             <div className="war-heatmap__table"><div className="war-heatmap__head"><span>TOKEN</span><span>5M</span><span>1H</span><span>6H</span><span>24H</span><span>FLOW</span><span>RISK</span></div>{rows.slice(0, 10).map((token) => <div className="war-heatmap__row" key={token.address}><strong>{token.symbol.slice(0, 7)}</strong>{[['5m', token.change5m],['1h', token.change1h],['6h', token.change6h],['24h', token.change24h]].map(([label, value]) => <span title={`${label}: ${signed(value)}`} className={value >= 0 ? 'heat-up' : 'heat-down'} style={{ '--alpha': `${Math.min(.9, .2 + Math.abs(value) / 100)}` }} key={label}>{signed(value)}</span>)}<span className="heat-flow">{compact.format(token.volume1h)}</span><span className={token.ml.poison >= 60 ? 'heat-down' : 'heat-up'} style={{ '--alpha': '.55' }}>{token.ml.poison}</span></div>)}</div>
           </div>
         </div>
 
         <div className="war-bottom-grid">
-          <div className="war-panel war-events"><div className="war-panel__head"><span>C1 / DELTA EVENT BUS</span><b>{live.events.length ? 'OBSERVED BETWEEN POLLS' : 'INITIAL MARKET STATE'}</b></div><div className="war-events__list">{events.slice(0, 9).map((event) => <div key={event.id}><time>{new Date(event.at).toISOString().slice(11,19)}</time><i className={event.kind} /><strong>${event.symbol}</strong><span>{event.kind === 'impulse' ? 'PRICE IMPULSE' : 'ATTENTION DECAY'}</span><b className={event.delta >= 0 ? 'up' : 'down'}>{signed(event.delta)}</b><small>{formatPrice(event.price)}</small></div>)}</div></div>
-          <div className="war-panel war-entities"><div className="war-panel__head"><span>C2 / ENTITY & WALLET GRAPH</span><b>PARTIAL RESOLUTION</b></div><div className="war-entity-grid">{rows.slice(0, 5).map((token, index) => <div key={token.address}><span className="war-entity-node"><Network size={12} /></span><p><strong>ENTITY {String(index + 1).padStart(2,'0')} / ${token.symbol}</strong><small>{shortAddress(token.pairAddress || token.address)} · {token.buys5m + token.sells5m} tx/5m</small></p><b>{token.ml.confidence}%</b></div>)}</div><div className="war-wallet-adapter"><Database size={13} /><span><b>WALLET IDENTITY ADAPTER REQUIRED</b>Connect Helius to resolve creator, funder, KOL and sniper lineages at transaction level.</span></div></div>
+          <div className="war-panel war-events"><div className="war-panel__head"><span>C1 / MACHINE EVENT LOG</span><b>{live.events.length ? 'CHANGE DETECTED' : 'INITIAL OBSERVATION STATE'}</b></div><div className="war-events__list">{events.slice(0, 9).map((event) => <div key={event.id}><time>{new Date(event.at).toISOString().slice(11,19)}</time><i className={event.kind} /><strong>${event.symbol}</strong><span>{event.kind === 'impulse' ? 'PROPAGATION EVENT' : 'ATTENTION DECAY'}</span><b className={event.delta >= 0 ? 'up' : 'down'}>{signed(event.delta)}</b><small>{formatPrice(event.price)}</small></div>)}</div></div>
+          <div className="war-panel war-entities"><div className="war-panel__head"><span>C2 / IDENTITY RESOLUTION GRAPH</span><b>PARTIAL RESOLUTION</b></div><div className="war-entity-grid">{rows.slice(0, 5).map((token, index) => <div key={token.address}><span className="war-entity-node"><Network size={12} /></span><p><strong>ENTITY {String(index + 1).padStart(2,'0')} / ${token.symbol}</strong><small>{shortAddress(token.pairAddress || token.address)} · {token.buys5m + token.sells5m} tx/5m</small></p><b>{token.ml.confidence}%</b></div>)}</div><div className="war-wallet-adapter"><Database size={13} /><span><b>IDENTITY CHANNEL NOT CONNECTED</b>Transaction enrichment will resolve creator, funder, KOL and sniper lineages.</span></div></div>
           <div className="war-panel war-system"><div className="war-panel__head"><span>C3 / SYSTEM TELEMETRY</span><b>{isLive && pump.status === 'live' ? 'NOMINAL' : 'DEGRADED'}</b></div><dl><div><dt>Universe</dt><dd>Pump.fun only</dd></div><div><dt>Launch source</dt><dd>Pump program logs</dd></div><div><dt>Market enrichment</dt><dd>public pair data</dd></div><div><dt>Pump stream</dt><dd>{pump.status}</dd></div><div><dt>Execution</dt><dd>disabled</dd></div></dl><div className="war-system__footer"><Cpu size={13} /> CANONICAL IDL DECODER / BROWSER EDGE</div></div>
         </div>
         <PumpHistoricalLab />
-        <div className="war-legal"><Radar size={11} /><span>PUBLIC MARKET DATA · READ ONLY · BOOSTS ARE PAID VISIBILITY, NOT ORGANIC SENTIMENT · ML OUTPUTS ARE HEURISTICS, NOT FORECASTS</span><span>{live.loading ? 'SYNCING…' : 'FRAME COMPLETE'}</span></div>
+        <div className="war-legal"><Radar size={11} /><span>THE MACHINE OBSERVES · IT DOES NOT EXECUTE · CLASSIFICATIONS ARE PROBABILISTIC RESEARCH OUTPUTS, NOT FORECASTS</span><span>{live.loading ? 'ACQUIRING…' : 'OBSERVATION COMPLETE'}</span></div>
       </div>
     </section>
   )
