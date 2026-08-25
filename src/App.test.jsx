@@ -18,14 +18,21 @@ describe('HypeGraph full-screen terminal', () => {
   it('exposes the Machine memory from the primary navigation', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /MACHINE MEMORY/i }))
-    expect(screen.getByRole('heading', { name: /The Machine remembers every launch/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Comprendre ce qui arrive après chaque launch/i })).toBeInTheDocument()
+  }, 15000)
+
+  it('opens the guided four-minute presentation', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: /DÉMO GUIDÉE/i }))
+    expect(screen.getByRole('dialog', { name: /Les nouveaux tokens Pump.fun arrivent ici/i })).toBeInTheDocument()
+    expect(screen.getByText('COMMENT ÇA MARCHE')).toBeInTheDocument()
   }, 15000)
 
   it('keeps all twenty intelligence modules inside the terminal', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /ANALYTIC FUNCTIONS/i }))
     expect(screen.getByRole('heading', { name: /The complete intelligence.*control plane/i })).toBeInTheDocument()
-    expect(screen.getByText('ANALYTIC FUNCTION INDEX')).toBeInTheDocument()
-    expect(screen.getByText('20 FUNCTIONS')).toBeInTheDocument()
+    expect(screen.getByText('OUTILS D’ANALYSE')).toBeInTheDocument()
+    expect(screen.getByText('20 FONCTIONS')).toBeInTheDocument()
   }, 15000)
 })

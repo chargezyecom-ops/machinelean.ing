@@ -9,8 +9,9 @@ export function usePumpLaunchStream() {
   const [status, setStatus] = useState('connecting')
   const [error, setError] = useState('')
   const seen = useRef(new Set())
-  const apiEnabled = import.meta.env.VITE_RESEARCH_API_ENABLED === 'true' && Boolean(import.meta.env.VITE_API_BASE_URL)
-  const apiStreamUrl = apiEnabled ? `${import.meta.env.VITE_API_BASE_URL.replace(/^http/, 'ws')}/v1/stream` : ''
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || ''
+  const apiEnabled = import.meta.env.VITE_RESEARCH_API_ENABLED === 'true' && Boolean(apiBaseUrl)
+  const apiStreamUrl = apiEnabled ? `${apiBaseUrl.replace(/^http/, 'ws')}/v1/stream` : ''
   const wsUrl = apiStreamUrl || import.meta.env.VITE_SOLANA_WS_URL || DEFAULT_WS_URL
   const commitment = import.meta.env.VITE_PUMP_COMMITMENT || 'confirmed'
 
@@ -21,6 +22,26 @@ export function usePumpLaunchStream() {
     let reconnectTimer
     let cancelled = false
     let attempts = 0
+    const controller = new AbortController()
+
+    const hydrateRecentLaunches = async () => {
+      if (!apiEnabled) return
+      try {
+        const response = await fetch(`${apiBaseUrl}/v1/launches?limit=24`, { signal: controller.signal })
+        if (!response.ok) return
+        const payload = await response.json()
+        if (cancelled || !Array.isArray(payload.data)) return
+        const incoming = payload.data.flatMap((launch) => {
+          const id = launch.id || `${launch.signature}:${launch.mint}`
+          if (seen.current.has(id)) return []
+          seen.current.add(id)
+          return [{ ...launch, id }]
+        })
+        if (incoming.length) setLaunches((current) => [...incoming, ...current].slice(0, MAX_LAUNCHES))
+      } catch (cause) {
+        if (!(cause instanceof Error && cause.name === 'AbortError')) setError('Impossible de précharger les launches récents')
+      }
+    }
 
     const connect = () => {
       if (cancelled) return
@@ -76,13 +97,15 @@ export function usePumpLaunchStream() {
       })
     }
 
+    hydrateRecentLaunches()
     connect()
     return () => {
       cancelled = true
+      controller.abort()
       window.clearTimeout(reconnectTimer)
       socket?.close()
     }
-  }, [apiEnabled, commitment, wsUrl])
+  }, [apiBaseUrl, apiEnabled, commitment, wsUrl])
 
   const stats = useMemo(() => {
     const now = Date.now()
